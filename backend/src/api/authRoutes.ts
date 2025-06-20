@@ -18,4 +18,17 @@ router.post('/register', async (req: Request, res: Response): Promise<any> => {
   }
 });
 
+// POST /api/auth/login
+router.post('/login', async (req: Request, res: Response): Promise<any> => {
+  try {
+    const { user, token } = await authService.login(req.body);
+    return res.status(200).json({ user, token });
+  } catch (err) {
+    if (err instanceof Error && err.message === 'Invalid credentials') {
+      return res.status(401).json({ message: err.message });
+    }
+    return res.status(500).send('Server Error');
+  }
+});
+
 export default router;
