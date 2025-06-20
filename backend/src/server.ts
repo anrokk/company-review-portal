@@ -3,6 +3,7 @@ import express, { Express, Request, Response } from 'express';
 import cors from 'cors';
 import db from './config/db';
 import companyRoutes from './api/companyRoutes'; 
+import authRoutes from './api/authRoutes';
 
 const app: Express = express();
 
@@ -10,6 +11,7 @@ app.use(cors());
 app.use(express.json());
 
 app.use('/api/companies', companyRoutes);
+app.use('/api/auth', authRoutes);
 
 
 app.get('/', (req: Request, res: Response) => {

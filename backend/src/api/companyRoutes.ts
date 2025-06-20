@@ -1,4 +1,4 @@
-import express, { Request, Response, Router } from 'express';
+import express, { Request, Response, Router } from 'express';
 import companyService from '../services/companyService';
 
 const router: Router = express.Router();
@@ -17,7 +17,6 @@ router.get('/', async (req: Request, res: Response) => {
 });
 
 // POST /api/companies
-
 router.post('/', async (req: Request, res: Response) => {
     try {
         const newCompany = await companyService.createCompany(req.body);
