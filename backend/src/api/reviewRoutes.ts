@@ -5,7 +5,7 @@ import authMiddleware from '../middleware/authMiddleware';
 const router: Router = express.Router();
 
 // Creating a review, protected route
-router.post('/', authMiddleware, async (req: Request, res: Response) => {
+router.post('/', authMiddleware, async (req: Request, res: Response): Promise<void> => {
     try {
         const { company_id, rating, role_applied_for, experience_text, was_ghosted } = req.body;
         const userId = req.userId as string;     
@@ -18,15 +18,18 @@ router.post('/', authMiddleware, async (req: Request, res: Response) => {
             experience_text,
             was_ghosted
         });
-        return res.status(201).json(newReview);
+        res.status(201).json(newReview);
+        return;
     } catch (err) {
         if (err instanceof Error) {
             if (err.message.includes('duplicate key value violates unique constraint')) {
-                return res.status(400).json({ error: 'You have already submitted a review for this company.' });
+                res.status(400).json({ error: 'You have already submitted a review for this company.' });
+                return;
             }
             console.error(err.message);
         }
-        return res.status(500).send('Server Error');
+        res.status(500).send('Server Error');
+        return;
     }
 });
 

@@ -5,12 +5,13 @@ interface JwtPayload {
     id: string;
 }
 
-const authMiddleware = (req: Request, res: Response, next: NextFunction) => {
+const authMiddleware = (req: Request, res: Response, next: NextFunction): void => {
     const authHeader = req.headers['authorization'];
     const token = authHeader && authHeader.split(' ')[1];
 
     if (!token) {
-        return res.sendStatus(401);
+        res.sendStatus(401);
+        return;
     }
 
     try {
@@ -18,7 +19,8 @@ const authMiddleware = (req: Request, res: Response, next: NextFunction) => {
         req.userId = decoded.id;
         next();
     } catch (err) {
-        return res.sendStatus(403);
+        res.sendStatus(403);
+        return;
     }
 };
 
