@@ -4,6 +4,7 @@ import cors from 'cors';
 import db from './config/db';
 import companyRoutes from './api/companyRoutes'; 
 import authRoutes from './api/authRoutes';
+import reviewRoutes from './api/reviewRoutes'; 
 
 const app: Express = express();
 
@@ -12,6 +13,7 @@ app.use(express.json());
 
 app.use('/api/companies', companyRoutes);
 app.use('/api/auth', authRoutes);
+app.use('/api/reviews', reviewRoutes);
 
 
 app.get('/', (req: Request, res: Response) => {
