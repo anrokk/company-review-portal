@@ -21,7 +21,7 @@ const CompanyCard = ({ company }: CompanyCardProps) => {
                         />
                     </div>
                 )}
-                <h3 className='font-bold text-lg text-gray-300'>{company.name}</h3>
+                <h3 className='font-bold text-lg text-white'>{company.name}</h3>
             </div>
         </Link>
     );

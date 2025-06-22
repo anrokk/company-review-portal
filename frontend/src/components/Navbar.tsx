@@ -8,7 +8,7 @@ const Navbar = () => {
           Intereview
         </Link>
         <div className="space-x-4 flex items-center">
-          <Link href="/login" className="px-4 py-2 rounded-md text-sm font-medium text-gray-300 hover:bg-neutral-900 transition-colors">
+          <Link href="/login" className="px-4 py-2 rounded-md text-sm font-medium text-white hover:bg-neutral-900 transition-colors">
             Login
           </Link>
           <Link href="/register" className="px-4 py-2 rounded-md text-sm font-medium text-black bg-white hover:bg-gray-200 transition-all duration-300">

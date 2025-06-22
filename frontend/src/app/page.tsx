@@ -27,8 +27,8 @@ export default async function Home() {
         </div>
       </section>
 
-      <section id="companies" className="py-12 mt-96">
-        <h2 className="text-3xl font-bold text-center mb-8">Companies</h2>
+      <section id="companies" className="py-12 mt-80">
+        <h2 className="text-3xl font-bold text-white text-center mb-8">Companies</h2>
         {companies.length > 0 ? (
           <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
             {companies.map((company) => (
@@ -36,7 +36,7 @@ export default async function Home() {
             ))}
           </div>
         ) : (
-          <p className="text-center text-gray-500">No companies found. Stay tuned !</p>
+          <p className="text-center text-gray-400">No companies found. Stay tuned !</p>
         )}
       </section>
     </>
