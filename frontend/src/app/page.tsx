@@ -27,7 +27,7 @@ export default async function Home() {
         </div>
       </section>
 
-      <section id="companies" className="py-12 mt-80">
+      <section id="companies" className="py-12 mt-80 scroll-mt-10">
         <h2 className="text-3xl font-bold text-white text-center mb-8">Companies</h2>
         {companies.length > 0 ? (
           <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">

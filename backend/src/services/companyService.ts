@@ -6,6 +6,10 @@ const getAllCompanies = async (): Promise<Company[]> => {
     return rows;
 };
 
+const getCompanyById = async (id: string): Promise<Company | null> => {
+    return await companyRepository.findById(id);
+}
+
 const createCompany = async (companyData: { name: string; domain?: string }): Promise<Company> => {
     const { name, domain } = companyData;
     let logoUrl = null;
@@ -31,7 +35,10 @@ const createCompany = async (companyData: { name: string; domain?: string }): Pr
     return rows[0];
 };
 
+
+
 export default {
     getAllCompanies,
+    getCompanyById,
     createCompany
 };

@@ -16,6 +16,22 @@ router.get('/', async (req: Request, res: Response) => {
     }
 });
 
+// GET /api/companies/:id
+router.get('/:id', async (req: Request, res: Response): Promise<any> => {
+    try {
+        const company = await companyService.getCompanyById(req.params.id);
+        if (!company) {
+            return res.status(404).json({ message: 'Company not found' });
+        }
+        return res.json(company);
+    } catch (err) {
+        if (err instanceof Error) {
+            console.error(err.message);
+        }
+        res.status(500).send('Server error');
+    }
+});
+
 // POST /api/companies
 router.post('/', async (req: Request, res: Response) => {
     try {
