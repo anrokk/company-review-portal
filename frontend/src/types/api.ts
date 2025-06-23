@@ -5,3 +5,19 @@ export interface Company {
     created_at: string;
     updated_at: string;
 }
+
+export interface Review {
+    id: string;
+    user_id: string;
+    company_id: string;
+    rating: number;
+    role_applied_for: string;
+    experience_text: string;
+    was_ghosted?: boolean;
+    created_at: string;
+    updated_at: string;
+}
+
+export interface ReviewWithUsername extends Review {
+    username: string;
+}
