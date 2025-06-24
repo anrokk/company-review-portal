@@ -7,6 +7,7 @@ interface AuthContextType {
     isAuthenticated: boolean;
     user: User | null;
     login: (token: string, user: User) => void;
+    register: (token: string, user: User) => void;
     logout: () => void;
 }
 
@@ -33,6 +34,13 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
         setIsAuthenticated(true);
     };
 
+    const register = (token: string, user: User) => {
+        localStorage.setItem('token', token);
+        localStorage.setItem('user', JSON.stringify(user));
+        setUser(user);
+        setIsAuthenticated(true);
+    }
+
     const logout = () => {
         localStorage.removeItem('token');
         localStorage.removeItem('user');
@@ -41,7 +49,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     };
 
     return (
-        <AuthContext.Provider value={{ isAuthenticated, user, login, logout }}>
+        <AuthContext.Provider value={{ isAuthenticated, user, login, register, logout }}>
             {children}
         </AuthContext.Provider>
     );

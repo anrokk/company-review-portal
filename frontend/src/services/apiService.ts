@@ -45,7 +45,7 @@ export async function getReviewsForCompany(companyId: string): Promise<ReviewWit
     }
 };
 
-export async function registerUser(userData: Omit<User, 'id' | 'created_at' | 'updated_at'> & { password?: string }): Promise<User> {
+export async function registerUser(userData: Omit<User, 'id' | 'created_at' | 'updated_at'> & { password?: string }): Promise< { user: User, token: string }> {
     const response = await fetch(`${API_URL}/api/auth/register`, {
         method: 'POST',
         headers: {
@@ -54,6 +54,18 @@ export async function registerUser(userData: Omit<User, 'id' | 'created_at' | 'u
         body: JSON.stringify(userData),
     });
 
-    return handleResponse<User>(response);
+    return handleResponse<{ user: User, token: string }>(response);
 
+};
+
+export async function loginUser(credentials: { email: string; password: string }): Promise<{ user: User, token: string }> {
+    const response = await fetch(`${API_URL}/api/auth/login`, {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(credentials)
+    });
+
+    return handleResponse<{ user: User, token: string }>(response);
 }
