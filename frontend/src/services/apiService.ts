@@ -1,4 +1,5 @@
 import { Company, ReviewWithUsername } from '@/types/api';
+import { User } from '@/types/api';
 
 const API_URL = process.env.NEXT_PUBLIC_API_URL;
 
@@ -42,4 +43,17 @@ export async function getReviewsForCompany(companyId: string): Promise<ReviewWit
         console.error(`Error fetching reviews for company with ID ${companyId}:`, error);
         return [];
     }
+};
+
+export async function registerUser(userData: Omit<User, 'id' | 'created_at' | 'updated_at'> & { password?: string }): Promise<User> {
+    const response = await fetch(`${API_URL}/api/auth/register`, {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(userData),
+    });
+
+    return handleResponse<User>(response);
+
 }
