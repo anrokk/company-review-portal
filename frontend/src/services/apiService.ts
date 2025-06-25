@@ -4,13 +4,15 @@ import { User } from '@/types/api';
 const API_URL = process.env.NEXT_PUBLIC_API_URL;
 
 async function handleResponse<T>(response: Response): Promise<T> {
+    const isJson = response.headers.get('Content-Type')?.includes('application/json');
+    const data = isJson ? await response.json() : null;
+
     if (!response.ok) {
-        if (response.status === 404) {
-            return null as T;
-        }
-        throw new Error(`API call failed with status: ${response.status}`);
+        const errorMessage = data?.message;
+        throw new Error(errorMessage);
     }
-    return response.json();
+
+    return data;
 };
 
 export async function getCompanies(): Promise<Company[]> {

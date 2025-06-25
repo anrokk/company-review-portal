@@ -9,12 +9,9 @@ router.post('/register', async (req: Request, res: Response): Promise<any> => {
     const newUser = await authService.register(req.body);
     return res.status(201).json(newUser);
   } catch (err) {
-    if (err instanceof Error) {
-      if (err.message === 'User with this email already exists') {
-        return res.status(400).json({ message: err.message });
-      }
-    }
-    return res.status(500).send('Server Error');
+    const message = err instanceof Error ? err.message : 'An unknown error occurred';
+    const statusCode = (err instanceof Error && err.message === 'User with this email already exists') ? 400 : 500;
+    return res.status(statusCode).json({ message });
   }
 });
 
@@ -24,10 +21,9 @@ router.post('/login', async (req: Request, res: Response): Promise<any> => {
     const { user, token } = await authService.login(req.body);
     return res.status(200).json({ user, token });
   } catch (err) {
-    if (err instanceof Error && err.message === 'Invalid credentials') {
-      return res.status(401).json({ message: err.message });
-    }
-    return res.status(500).send('Server Error');
+    const message = err instanceof Error ? err.message : 'An unknown error occurred';
+    const statusCode = (err instanceof Error && err.message === 'Invalid credentials') ? 401 : 500;
+    return res.status(statusCode).json({ message });
   }
 });
 
