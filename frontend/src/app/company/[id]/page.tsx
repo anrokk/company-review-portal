@@ -7,7 +7,7 @@ interface CompanyDetailPageProps {
 }
 
 export default async function CompanyDetailPage({ params }: CompanyDetailPageProps) {
-    const { id } = params;
+    const { id } = await params;
 
     const [company, reviews] = await Promise.all([
         getCompanyById(id),
