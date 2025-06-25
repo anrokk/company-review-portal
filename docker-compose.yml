@@ -12,5 +12,40 @@ services:
     volumes:
       - postgres_data:/var/lib/postgresql/data
 
+  backend:
+    build: ./backend
+    restart: unless-stopped 
+    ports:
+      - "5001:5001"
+    volumes:
+      - ./backend:/app 
+      - /app/node_modules 
+    env_file:
+      - ./backend/.env
+    environment:
+      - DB_HOST=db
+    healthcheck:
+      test: ["CMD-SHELL", "wget --quiet --tries=1 --spider http://localhost:5001/ || exit 1"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 20s 
+    depends_on:
+      - db 
+
+  frontend:
+    build: ./frontend 
+    ports:
+      - "3000:3000"
+    volumes:
+      - ./frontend:/app
+      - /app/node_modules
+    environment:
+      - WATCHPACK_POLLING=true 
+      - NEXT_PUBLIC_API_URL=http://backend:5001
+    depends_on:
+      backend:
+        condition: service_healthy 
+
 volumes:
   postgres_data:
