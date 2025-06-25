@@ -1,5 +1,4 @@
-import { Company, ReviewWithUsername } from '@/types/api';
-import { User } from '@/types/api';
+import { Company, ReviewWithUsername, User, Review } from '@/types/api';
 
 const API_URL = process.env.NEXT_PUBLIC_API_URL;
 
@@ -36,6 +35,22 @@ export async function getCompanyById(id: string): Promise<Company | null> {
         return null;
     }
 };
+
+export async function createReview(
+    reviewData: Omit<Review, 'id' | 'user_id' | 'created_at' | 'updated_at'>,
+    token: string
+): Promise<Review> {
+    const response = await fetch(`${API_URL}/api/reviews`, {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${token}`,
+        },
+        body: JSON.stringify(reviewData),
+    });
+
+    return handleResponse<Review>(response);
+}
 
 export async function getReviewsForCompany(companyId: string): Promise<ReviewWithUsername[]> {
     try {
