@@ -21,8 +21,6 @@ export default async function CompanyDetailPage({ params }: CompanyDetailPagePro
     return (
         <div>
             <h1 className="text-4xl font-bold">{company.name}</h1>
-            <p className="text-lg text-gray-400 mt-2">Reviews</p>
-
             <ReviewList initialReviews={reviews} companyId={id} />
         </div>
     );
