@@ -39,12 +39,14 @@ export default function ReviewList({ initialReviews, companyId }: ReviewListProp
                 </div>
             )}
 
-            <h2 className="text-2xl font-bold text-white text-center mt-12 mb-4">Reviews</h2>
             <div className="mt-12 space-y-6">
                 {initialReviews.length > 0 ? (
-                    initialReviews.map(review => (
-                        <ReviewCard key={review.id} review={review}></ReviewCard>
-                    ))
+                    <>
+                        <h2 className="text-2xl font-bold text-white text-center mt-12 mb-4">Reviews</h2>
+                        {initialReviews.map(review => (
+                            <ReviewCard key={review.id} review={review}></ReviewCard>
+                        ))}
+                    </>
                 ) : (
                     <p className="text-center text-gray-500 py-8">
                         No reviews for this company yet. Be the first!
