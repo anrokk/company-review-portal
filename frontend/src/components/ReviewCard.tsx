@@ -1,4 +1,5 @@
 import { ReviewWithUsername } from "@/types/api";
+import StarRating from "./StarRating";
 
 interface ReviewCardProps {
     review: ReviewWithUsername;
@@ -15,7 +16,7 @@ const ReviewCard = ({ review }: ReviewCardProps) => {
     return (
         <article className="p-6 bg-neutral-950/50 border border-neutral-800 rounded-lg">
             <div className="flex justify-between items-center">
-                <p className="font-bold text-lg">Rating: {review.rating}/5</p>
+                <StarRating rating={review.rating}/>
                 <div className="text-right">
                     <p className="text-sm font-medium text-gray-300">by {review.username}</p>
                     <p className="text-xs text-gray-500 mt-1">{reviewDate}</p>
