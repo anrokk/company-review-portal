@@ -2,7 +2,7 @@ import bcrypt from 'bcryptjs';
 import jwt from 'jsonwebtoken';
 import userRepository, { User } from '../repositories/userRepository';
 
-const register = async (userData: any): Promise<User> => {
+const register = async (userData: any): Promise<{user: User, token: string}> => {
     const { username, email, password } = userData;
     
     const existingUser = await userRepository.findByEmail(email);
@@ -18,7 +18,13 @@ const register = async (userData: any): Promise<User> => {
         password_hash
     });
 
-    return newUser;
+    const token = jwt.sign(
+        { id: newUser.id, email: newUser.email },
+        process.env.JWT_SECRET as string,
+        { expiresIn: '1h' }
+    );
+
+    return { user: newUser, token };
 };
 
 const login = async (loginData: any): Promise<{ user: User, token: string}> => {

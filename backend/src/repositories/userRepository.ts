@@ -14,11 +14,11 @@ interface UserWithPassword extends User {
 }
 
 const findByEmail = async (email: string): Promise<UserWithPassword | null> => {
-  const result: QueryResult<UserWithPassword> = await db.query(
-    'SELECT * FROM users WHERE email = $1',
-    [email]
-  );
-  return result.rows[0] || null;
+    const result: QueryResult<UserWithPassword> = await db.query(
+        'SELECT * FROM users WHERE email = $1',
+        [email]
+    );
+    return result.rows[0] || null;
 };
 
 const create = async (userData: { username: string, email: string, password_hash: string }): Promise<User> => {
