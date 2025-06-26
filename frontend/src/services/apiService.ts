@@ -1,6 +1,15 @@
 import { Company, ReviewWithUsername, User, Review } from '@/types/api';
+import { get } from 'http';
 
-const API_URL = process.env.NEXT_PUBLIC_API_URL;
+const getBaseApiUrl = () => {
+    if (typeof window === 'undefined') {
+        return process.env.API_URL_SERVER;
+    }
+
+    return process.env.NEXT_PUBLIC_API_URL_CLIENT
+}
+
+const API_URL = getBaseApiUrl();
 
 async function handleResponse<T>(response: Response): Promise<T> {
     const isJson = response.headers.get('Content-Type')?.includes('application/json');

@@ -10,15 +10,19 @@ import { Company } from "@/types/api";
 export default function CreateReviewPage() {
     const router = useRouter();
     const params = useParams();
-    const { isAuthenticated, user } = useAuth();
+    const { isAuthenticated, isLoading: isAuthLoading } = useAuth();
     const companyId = params.id as string;
 
     const [company, setCompany] = useState<Company | null>(null);
-    const [isLoading, setIsLoading] = useState(true);
+    const [isPageLoading, setIsPageLoading] = useState(true);
 
     useEffect(() => {
+        if (isAuthLoading) {
+            return;
+        }
+
         if (!isAuthenticated) {
-            router.push("/login");
+            router.push('/login');
             return;
         }
 
@@ -27,13 +31,13 @@ export default function CreateReviewPage() {
                 const companyData = await getCompanyById(companyId);
                 setCompany(companyData);
             }
-            setIsLoading(false);
+            setIsPageLoading(false);
         };
 
         fetchCompany();
     }, [isAuthenticated, companyId, router]);
 
-    if (isLoading) {
+    if (isAuthLoading || isPageLoading) {
         return <div className="text-center">Loading...</div>;
     }
 

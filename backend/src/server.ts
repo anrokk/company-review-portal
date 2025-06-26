@@ -11,6 +11,10 @@ const app: Express = express();
 app.use(cors());
 app.use(express.json());
 
+app.get('/', (req, res) => {
+    res.status(200).send('OK');
+});
+
 app.use('/api/companies', companyRoutes);
 app.use('/api/auth', authRoutes);
 app.use('/api/reviews', reviewRoutes);

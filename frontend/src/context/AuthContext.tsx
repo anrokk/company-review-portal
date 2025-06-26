@@ -5,6 +5,7 @@ import { User } from '@/types/api';
 
 interface AuthContextType {
     isAuthenticated: boolean;
+    isLoading: boolean;
     user: User | null;
     token: string | null;
     login: (token: string, user: User) => void;
@@ -17,16 +18,25 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     const [user, setUser] = useState<User | null>(null);
     const [token, setToken] = useState<string | null>(null);
     const [isAuthenticated, setIsAuthenticated] = useState<boolean>(false);
+    const [isLoading, setIsLoading] = useState<boolean>(true);
 
     useEffect(() => {
-        const storedToken = localStorage.getItem('token');
-        const userData = localStorage.getItem('user');
+        try {
+            const storedToken = localStorage.getItem('token');
+            const userData = localStorage.getItem('user');
 
-        if (storedToken && userData) {
-            setUser(JSON.parse(userData));
-            setToken(storedToken);
-            setIsAuthenticated(true);
+            if (storedToken && userData) {
+                setUser(JSON.parse(userData));
+                setToken(storedToken);
+                setIsAuthenticated(true);
+            }
+        } catch (error) {
+            console.error('Failed to load auth state from localStorage:', error);
+            logout();
+        } finally {
+            setIsLoading(false);
         }
+        
     }, []);
 
     const login = (tokenData: string, userData: User) => {
@@ -46,7 +56,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     };
 
     return (
-        <AuthContext.Provider value={{ isAuthenticated, user, token, login, logout }}> {/* <-- 6. PROVIDE token in value */}
+        <AuthContext.Provider value={{ isAuthenticated, isLoading, user, token, login, logout }}>
             {children}
         </AuthContext.Provider>
     );
