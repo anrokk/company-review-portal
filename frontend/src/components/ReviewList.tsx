@@ -12,7 +12,7 @@ interface ReviewListProps {
 }
 
 export default function ReviewList({ initialReviews, companyId }: ReviewListProps) {
-    const { isAuthenticated } = useAuth();
+    const { isAuthenticated, user } = useAuth();
 
     const [sortOrder, setSortOrder] = useState('newest');
     const [sortedReviews, setSortedReviews] = useState<ReviewWithUsername[]>([]);
@@ -36,11 +36,18 @@ export default function ReviewList({ initialReviews, companyId }: ReviewListProp
 
         setSortedReviews(reviewsToSort);
 
-    }, [sortOrder, initialReviews])
+    }, [sortOrder, initialReviews]);
+
+    const userHasReviewed = user
+        ? initialReviews.some(review => review.user_id === user.id)
+        : false;
+
+    const showCreateReviewPrompt = isAuthenticated && !userHasReviewed;
+
 
     return (
         <>
-            {isAuthenticated ? (
+            {showCreateReviewPrompt && (
                 <div className="my-12 text-center p-8 bg-neutral-950/50 border border-neutral-800 rounded-lg">
                     <h3 className="text-xl font-bold text-white">Have you applied to this company?</h3>
                     <p className="text-gray-400 mt-2">Help the community by sharing your experience.</p>
@@ -51,7 +58,9 @@ export default function ReviewList({ initialReviews, companyId }: ReviewListProp
                         Create a Review
                     </Link>
                 </div>
-            ) : (
+            )}
+
+            {!isAuthenticated && (
                 <div className="my-12 text-center p-8 bg-neutral-950/50 border border-neutral-800 rounded-lg">
                     <h3 className="text-xl font-bold text-white">Want to share your experience?</h3>
                     <p className="text-gray-400 mt-2">Login or create an account to post a review.</p>

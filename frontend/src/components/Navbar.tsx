@@ -28,7 +28,7 @@ const Navbar = () => {
         <div className="space-x-4 flex items-center">
           {isAuthenticated ? (
             <>
-              <span className='text-gray-400 hidden sm:block'>Logged in as {user?.username}</span>
+              <span className='text-gray-400 hidden sm:block'>{user?.username}</span>
               <button
                 onClick={handleLogout}
                 className='px-4 py-2 rounded-md text-sm font-medium text-white hover:bg-neutral-900 cursor-pointer transition-all duration-300'>
