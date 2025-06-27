@@ -1,5 +1,6 @@
 import express, { Request, Response, Router } from 'express';
 import companyService from '../services/companyService';
+import authMiddleware from '../middleware/authMiddleware';
 
 const router: Router = express.Router();
 
@@ -33,13 +34,16 @@ router.get('/:id', async (req: Request, res: Response): Promise<any> => {
 });
 
 // POST /api/companies
-router.post('/', async (req: Request, res: Response) => {
+router.post('/', authMiddleware, async (req: Request, res: Response) => {
     try {
         const newCompany = await companyService.createCompany(req.body);
         res.status(201).json(newCompany);
     } catch (err) {
         if (err instanceof Error) {
-            console.error(err.message);
+            if (err.message.includes('already exists')) {
+                res.status(409).json({ message: err.message });
+                return;
+            }
         }
         res.status(500).send('Server error');
     }

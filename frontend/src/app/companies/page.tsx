@@ -1,12 +1,13 @@
 import { getCompanies } from "@/services/apiService";
 import CompanyCard from "@/components/CompanyCard";
+import Link from "next/link";
 
 interface CompaniesPageProps {
     searchParams: { query?: string };
 }
 
 export default async function CompaniesPage({ searchParams }: CompaniesPageProps) {
-    const searchTerm  = searchParams.query || "";
+    const searchTerm = searchParams.query || "";
     const allCompanies = await getCompanies();
     const filteredCompanies = allCompanies.filter(company =>
         company.name.toLowerCase().includes(searchTerm.toLowerCase())
@@ -29,6 +30,13 @@ export default async function CompaniesPage({ searchParams }: CompaniesPageProps
                         className="w-full px-4 py-3 bg-neutral-900 border border-neutral-700 rounded-md shadow-sm placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-white">
                     </input>
                 </form>
+            </div>
+
+            <div className="text-center mb-12">
+                <p className="text-gray-400 mb-4">Don't see the company you're looking for?</p>
+                <Link href="/companies/new" className="font-medium text-sky-400 hover:text-sky-300">
+                    Add it to our list!
+                </Link>
             </div>
 
             <div>

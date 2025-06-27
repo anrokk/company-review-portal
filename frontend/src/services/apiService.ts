@@ -45,6 +45,22 @@ export async function getCompanyById(id: string): Promise<Company | null> {
     }
 };
 
+export async function createCompany(
+    companyData: { name: string; logo_url?: string },
+    token: string
+): Promise<Company> {
+    const response = await fetch(`${API_URL}/api/companies`, {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${token}`,
+        },
+        body: JSON.stringify(companyData)
+    });
+
+    return handleResponse<Company>(response);
+};
+
 export async function createReview(
     reviewData: Omit<Review, 'id' | 'user_id' | 'created_at' | 'updated_at'>,
     token: string

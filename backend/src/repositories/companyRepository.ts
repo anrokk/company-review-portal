@@ -21,6 +21,14 @@ const findById = async (id: string): Promise<Company | null> => {
     return result.rows[0] || null;
 };
 
+const findByName = async (name: string): Promise<Company | null> => {
+    const result: QueryResult<Company> = await db.query(
+        'SELECT * FROM companies WHERE LOWER(name) = LOWER($1)',
+        [name]
+    );
+    return result.rows[0] || null;
+};
+
 const create = (company: { name: string, logo_url?: string }): Promise<QueryResult<Company>> => {
     const { name, logo_url } = company;
     return db.query(
@@ -31,6 +39,7 @@ const create = (company: { name: string, logo_url?: string }): Promise<QueryResu
 
 export default {
     findAll,
-    create,
-    findById
+    findById,
+    findByName,
+    create
 }

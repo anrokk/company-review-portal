@@ -10,7 +10,14 @@ const getCompanyById = async (id: string): Promise<Company | null> => {
 }
 
 const createCompany = async (companyData: { name: string; logo_url?: string }): Promise<Company> => {
-    const { rows } = await companyRepository.create(companyData);
+    const { name, logo_url } = companyData;
+
+    const existingCompany = await companyRepository.findByName(name);
+    if (existingCompany) {
+        throw new Error(`Company with name "${name}" already exists.`);
+    }
+
+    const { rows } = await companyRepository.create( { name, logo_url });
     return rows[0];
 };
 

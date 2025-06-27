@@ -88,9 +88,14 @@ export default function CreateReviewForm({ companyId }: CreateReviewFormProps) {
                     <textarea id="experience" rows={4} value={text} onChange={e => setText(e.target.value)} required className="mt-1 block w-full px-3 py-2 bg-neutral-900 border border-neutral-700 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-white"></textarea>
                 </div>
 
-                {error && <p className="text-red-400 text-sm">{error}</p>}
-
-                <button type="submit" disabled={isLoading} className="w-full mt-6 py-3 px-4 rounded-md font-medium cursor-pointer text-black bg-white hover:bg-gray-200 transition-all duration-300 disabled:opacity-50">
+                {error &&
+                    (<div className="p-3 bg-red-900/50 border border-red-500/50 rounded-md">
+                        <p className="text-red-300 text-sm text-center">{error}</p>
+                    </div>
+                    )
+                }
+                
+                <button type="submit" disabled={isLoading} className="w-full py-3 px-4 rounded-md font-medium cursor-pointer text-black bg-white hover:bg-gray-200 transition-all duration-300 disabled:opacity-50">
                     {isLoading ? 'Submitting...' : 'Submit Review'}
                 </button>
             </form>
