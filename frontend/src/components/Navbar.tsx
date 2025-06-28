@@ -6,7 +6,7 @@ import { useRouter } from 'next/navigation';
 
 const Navbar = () => {
 
-  const { isAuthenticated, user, logout } = useAuth();
+  const { isAuthenticated, user, logout, isLoading } = useAuth();
   const router = useRouter();
 
   const handleLogout = () => {
@@ -25,8 +25,10 @@ const Navbar = () => {
             Companies
           </Link>
         </div>
-        <div className="space-x-4 flex items-center">
-          {isAuthenticated ? (
+        <div className="space-x-4 flex items-center h-10">
+          {isLoading ? (
+            <div></div>
+          ) : isAuthenticated ? (
             <>
               <span className='text-gray-400 hidden sm:block'>{user?.username}</span>
               <button

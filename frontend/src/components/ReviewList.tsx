@@ -12,7 +12,7 @@ interface ReviewListProps {
 }
 
 export default function ReviewList({ initialReviews, companyId }: ReviewListProps) {
-    const { isAuthenticated, user } = useAuth();
+    const { isAuthenticated, user, isLoading: isAuthLoading } = useAuth();
 
     const [sortOrder, setSortOrder] = useState('newest');
     const [sortedReviews, setSortedReviews] = useState<ReviewWithUsername[]>([]);
@@ -43,6 +43,10 @@ export default function ReviewList({ initialReviews, companyId }: ReviewListProp
         : false;
 
     const showCreateReviewPrompt = isAuthenticated && !userHasReviewed;
+
+    if (isAuthLoading) {
+        return <div></div>;
+    };
 
 
     return (
