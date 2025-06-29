@@ -2,6 +2,7 @@ import 'dotenv/config';
 import express, { Express, Request, Response } from 'express';
 import cors from 'cors';
 import db from './config/db';
+import { apiLimiter, authLimiter } from './middleware/rateLimitMiddleware';
 import companyRoutes from './api/companyRoutes'; 
 import authRoutes from './api/authRoutes';
 import reviewRoutes from './api/reviewRoutes'; 
@@ -14,6 +15,10 @@ app.use(express.json());
 app.get('/', (req, res) => {
     res.status(200).send('OK');
 });
+
+app.use('/api/auth', authLimiter);
+app.use('/api/companies', apiLimiter);
+app.use('/api/reviews', apiLimiter);
 
 app.use('/api/companies', companyRoutes);
 app.use('/api/auth', authRoutes);
