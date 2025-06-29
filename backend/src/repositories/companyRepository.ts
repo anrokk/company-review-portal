@@ -9,8 +9,34 @@ export interface Company {
     updated_at: Date;
 }
 
-const findAll = (): Promise<QueryResult<Company>> => {
-    return db.query('SELECT * FROM companies ORDER BY created_at DESC');
+const findAllPaginated = async (limit: number, offset: number, searchTerm?: string) => {
+    let baseDataQuery = 'SELECT * FROM companies';
+    let baseCountQuery = 'SELECT COUNT(*) FROM companies';
+    const dataQueryParams: (string | number)[] = [];
+    const countQueryParams: string[] = [];
+
+    if (searchTerm && searchTerm.trim() !== '') {
+        const whereClause = ' WHERE name ILIKE $1';
+        baseDataQuery += whereClause;
+        baseCountQuery += whereClause;
+
+        const searchTermParam = `%${searchTerm}%`;
+        dataQueryParams.push(searchTermParam);
+        countQueryParams.push(searchTermParam);
+    }
+
+    baseDataQuery += ` ORDER BY name ASC LIMIT $${dataQueryParams.length + 1} OFFSET $${dataQueryParams.length + 2}`;
+    dataQueryParams.push(limit, offset);
+
+    const [dataResult, countResult] = await Promise.all([
+        db.query(baseDataQuery, dataQueryParams),
+        db.query(baseCountQuery, countQueryParams)
+    ]);
+
+    return {
+        companies: dataResult.rows as Company[],
+        totalCount: parseInt(countResult.rows[0].count, 10)
+    };
 };
 
 const findById = async (id: string): Promise<Company | null> => {
@@ -38,7 +64,7 @@ const create = (company: { name: string, logo_url?: string }): Promise<QueryResu
 };
 
 export default {
-    findAll,
+    findAllPaginated,
     findById,
     findByName,
     create

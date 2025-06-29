@@ -6,9 +6,13 @@ const router: Router = express.Router();
 
 // GET /api/companies
 router.get('/', async (req: Request, res: Response) => {
+    const page = parseInt(req.query.page as string, 10) || 1;
+    const limit = parseInt(req.query.limit as string, 10) || 10;
+    const searchTerm = req.query.search as string || undefined;
+
     try {
-        const companies = await companyService.getAllCompanies();
-        res.json(companies);
+        const result = await companyService.getAllCompanies({ page, limit, searchTerm });
+        res.json(result);
     } catch (err) {
         if (err instanceof Error) {
             console.error(err.message);

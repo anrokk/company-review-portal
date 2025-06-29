@@ -1,8 +1,23 @@
 import companyRepository, { Company } from "../repositories/companyRepository";
 
-const getAllCompanies = async (): Promise<Company[]> => {
-    const { rows } = await companyRepository.findAll();
-    return rows;
+const getAllCompanies = async (options: { page: number, limit: number, searchTerm?: string }) => {
+    const { page, limit, searchTerm } = options;
+    const offset = (page - 1) * limit;
+
+    const { companies, totalCount } = await companyRepository.findAllPaginated(limit, offset, searchTerm);
+
+    const totalPages = Math.ceil(totalCount / limit);
+    const hasNextPage = page < totalPages;
+
+    return {
+        data: companies,
+        pagination: {
+            totalItems: totalCount,
+            totalPages: totalPages,
+            currentPage: page,
+            hasNextPage: hasNextPage,
+        }
+    };
 };
 
 const getCompanyById = async (id: string): Promise<Company | null> => {

@@ -23,15 +23,31 @@ async function handleResponse<T>(response: Response): Promise<T> {
     return data;
 };
 
-export async function getCompanies(): Promise<Company[]> {
+export interface PaginatedCompanies {
+    data: Company[];
+    pagination: {
+        totalItems: number;
+        totalPages: number;
+        currentPage: number;
+        hasNextPage: boolean;
+    };
+};
+
+export async function getCompanies(page = 1, limit = 12, searchTerm = ''): Promise<PaginatedCompanies> {
+    const query = new URLSearchParams({
+        page: String(page),
+        limit: String(limit),
+        search: searchTerm
+    });
+
     try {
-        const response = await fetch(`${API_URL}/api/companies`, {
+        const response = await fetch(`${API_URL}/api/companies?${query}`, {
             cache: 'no-store'
         });
-        return handleResponse<Company[]>(response);
+        return handleResponse<PaginatedCompanies>(response);
     } catch (error) {
         console.error('Error fetching companies:', error);
-        return [];
+        return { data: [], pagination: { totalItems: 0, totalPages: 0, currentPage: 1, hasNextPage: false } };
     }
 };
 
