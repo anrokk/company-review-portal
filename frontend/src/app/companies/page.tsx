@@ -57,7 +57,7 @@ export default function CompaniesPage() {
                         onChange={(e) => setSearchTerm(e.target.value)}
                         className="w-full px-4 py-3 bg-neutral-900 border border-neutral-700 rounded-md shadow-sm placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-white"
                     />
-                    <button type="submit" className="px-6 py-3 rounded-md font-medium text-black bg-white hover:bg-gray-200 duration-300 transition-all">
+                    <button type="submit" className="px-6 py-3 rounded-md font-medium text-black bg-white hover:bg-gray-200">
                         Search
                     </button>
                 </form>

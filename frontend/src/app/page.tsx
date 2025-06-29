@@ -3,7 +3,7 @@ import Link from "next/link";
 
 export default function Home() {
   return (
-    <section className="py-20 sm:py-32">
+    <section className="py-20 sm:py-12">
       <div className="relative overflow-hidden rounded-2xl bg-neutral-950/50 border border-neutral-800/50 px-6 sm:px-12 py-16 sm:py-24 shadow-2xl">
         <div
           aria-hidden="true"
