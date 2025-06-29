@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, FormEvent, useEffect } from 'react';
+import { useState, FormEvent } from 'react';
 import { useRouter } from 'next/navigation';
 import { useAuth } from '@/context/AuthContext';
 import { createCompany } from '@/services/apiService';
@@ -8,18 +8,10 @@ import { createCompany } from '@/services/apiService';
 
 export default function NewCompanyPage() {
     const router = useRouter();
-    const { isAuthenticated, isLoading: isAuthLoading, token } = useAuth();
-
+    const { token } = useAuth();
     const [name, setName] = useState('');
     const [error, setError] = useState<string | null>(null);
     const [isLoading, setIsLoading] = useState(false);
-
-    useEffect(() => {
-        if (isAuthLoading) return;
-        if (!isAuthenticated) {
-            router.push('/login');
-        }
-    }, [isAuthenticated, isAuthLoading, router]);
 
     const handleSubmit = async (e: FormEvent) => {
         e.preventDefault();

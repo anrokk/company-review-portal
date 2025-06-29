@@ -2,6 +2,7 @@
 
 import { createContext, useContext, useState, useEffect, ReactNode } from 'react';
 import { User } from '@/types/api';
+import Cookies from 'js-cookie';
 
 interface AuthContextType {
     isAuthenticated: boolean;
@@ -17,43 +18,34 @@ const AuthContext = createContext<AuthContextType | undefined>(undefined);
 export const AuthProvider = ({ children }: { children: ReactNode }) => {
     const [user, setUser] = useState<User | null>(null);
     const [token, setToken] = useState<string | null>(null);
-    const [isAuthenticated, setIsAuthenticated] = useState<boolean>(false);
     const [isLoading, setIsLoading] = useState<boolean>(true);
 
     useEffect(() => {
-        try {
-            const storedToken = localStorage.getItem('token');
-            const userData = localStorage.getItem('user');
+        const storedToken = Cookies.get('token');
+        const storedUser = Cookies.get('user');
 
-            if (storedToken && userData) {
-                setUser(JSON.parse(userData));
-                setToken(storedToken);
-                setIsAuthenticated(true);
-            }
-        } catch (error) {
-            console.error('Failed to load auth state from localStorage:', error);
-            logout();
-        } finally {
-            setIsLoading(false);
+        if (storedToken && storedUser) {
+            setUser(JSON.parse(storedUser));
+            setToken(storedToken);
         }
-        
+        setIsLoading(false);
     }, []);
 
     const login = (tokenData: string, userData: User) => {
-        localStorage.setItem('token', tokenData);
-        localStorage.setItem('user', JSON.stringify(userData));
-        setUser(userData);
+        Cookies.set('token', tokenData, { expires: 7, secure: true });
+        Cookies.set('user', JSON.stringify(userData), { expires: 7, secure: true });
         setToken(tokenData);
-        setIsAuthenticated(true);
+        setUser(userData);
     };
 
     const logout = () => {
-        localStorage.removeItem('token');
-        localStorage.removeItem('user');
-        setUser(null);
+        Cookies.remove('token');
+        Cookies.remove('user');
         setToken(null);
-        setIsAuthenticated(false);
+        setUser(null);
     };
+
+    const isAuthenticated = !!token;
 
     return (
         <AuthContext.Provider value={{ isAuthenticated, isLoading, user, token, login, logout }}>
