@@ -32,8 +32,9 @@ const createCompany = async (companyData: { name: string; logo_url?: string }): 
         throw new Error(`Company with name "${name}" already exists.`);
     }
 
-    const { rows } = await companyRepository.create( { name, logo_url });
-    return rows[0];
+    const newCompany = await companyRepository.create({ name, logo_url, is_approved: false });
+
+    return newCompany;
 };
 
 
