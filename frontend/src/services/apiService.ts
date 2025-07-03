@@ -11,7 +11,7 @@ const getBaseApiUrl = () => {
 
 const API_URL = getBaseApiUrl();
 
-async function handleResponse<T>(response: Response): Promise<T> {
+export async function handleResponse<T>(response: Response): Promise<T> {
     const isJson = response.headers.get('Content-Type')?.includes('application/json');
     const data = isJson ? await response.json() : null;
 
@@ -103,7 +103,7 @@ export async function getReviewsForCompany(companyId: string): Promise<ReviewWit
     }
 };
 
-export async function registerUser(userData: Omit<User, 'id' | 'created_at' | 'updated_at'> & { password?: string }): Promise< { user: User, token: string }> {
+export async function registerUser(userData: Omit<User, 'id' | 'created_at' | 'updated_at'> & { password?: string }): Promise<{ user: User, token: string }> {
     const response = await fetch(`${API_URL}/api/auth/register`, {
         method: 'POST',
         headers: {

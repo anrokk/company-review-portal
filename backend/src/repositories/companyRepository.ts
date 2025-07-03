@@ -61,9 +61,17 @@ const create = async (companyData: { name: string, logo_url?: string, is_approve
     return result.rows[0];
 };
 
+const findPending = async (): Promise<Company[]> => {
+    const result = await db.query(
+        'SELECT * FROM companies WHERE is_approved = FALSE ORDER BY created_at DESC'
+    );
+    return result.rows;
+};
+
 export default {
     findAllPaginated,
     findById,
     findByName,
-    create
+    create,
+    findPending
 }

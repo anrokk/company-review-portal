@@ -19,7 +19,7 @@ const register = async (userData: any): Promise<{user: User, token: string}> => 
     });
 
     const token = jwt.sign(
-        { id: newUser.id, email: newUser.email },
+        { id: newUser.id, email: newUser.email, role: newUser.role },
         process.env.JWT_SECRET as string,
         { expiresIn: '1h' }
     );
@@ -40,8 +40,9 @@ const login = async (loginData: any): Promise<{ user: User, token: string}> => {
         throw new Error('Invalid credentials');
     }
 
+    const payloadToSign = { id: user.id, email: user.email, role: user.role };
     const token = jwt.sign(
-        { id: user.id, email: user.email },
+        payloadToSign,
         process.env.JWT_SECRET as string,
         { expiresIn: '1h' }
     );
@@ -50,11 +51,12 @@ const login = async (loginData: any): Promise<{ user: User, token: string}> => {
         id: user.id,
         username: user.username,
         email: user.email,
+        role: user.role,
         created_at: user.created_at,
         updated_at: user.updated_at
     };
 
-    return { user: userToReturn, token };
+    return { user: userToReturn as User, token };
 };
 
 export default {

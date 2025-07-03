@@ -5,7 +5,8 @@ import db from './config/db';
 import { apiLimiter, authLimiter } from './middleware/rateLimitMiddleware';
 import companyRoutes from './api/companyRoutes'; 
 import authRoutes from './api/authRoutes';
-import reviewRoutes from './api/reviewRoutes'; 
+import reviewRoutes from './api/reviewRoutes';
+import adminRoutes from './api/adminRoutes'; 
 
 const app: Express = express();
 
@@ -23,6 +24,7 @@ app.use('/api/reviews', apiLimiter);
 app.use('/api/companies', companyRoutes);
 app.use('/api/auth', authRoutes);
 app.use('/api/reviews', reviewRoutes);
+app.use('/api/admin', adminRoutes);
 
 
 app.get('/', (req: Request, res: Response) => {

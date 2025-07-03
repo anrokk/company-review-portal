@@ -50,6 +50,7 @@ services:
       - WATCHPACK_POLLING=true 
       - API_URL_SERVER=http://backend:5001
       - NEXT_PUBLIC_API_URL_CLIENT=http://localhost:5001
+      - JWT_SECRET=${JWT_SECRET}
     depends_on:
       backend:
         condition: service_healthy 
