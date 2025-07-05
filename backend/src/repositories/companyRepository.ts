@@ -68,10 +68,31 @@ const findPending = async (): Promise<Company[]> => {
     return result.rows;
 };
 
+
+// for admin use
+const updateApprovalStatus = async (id: string, is_approved: boolean): Promise<Company | null> => {
+    const result: QueryResult<Company> = await db.query(
+        'UPDATE companies SET is_approved = $1, updated_at = NOW() WHERE id = $2 RETURNING *',
+        [is_approved, id]
+    );
+    return result.rows[0] || null;
+};
+
+
+// for admin use
+const deleteById = async (id: string): Promise<void> => {
+    await db.query(
+        'DELETE FROM companies WHERE id = $1',
+        [id]
+    );
+};
+
 export default {
     findAllPaginated,
     findById,
     findByName,
     create,
-    findPending
+    findPending,
+    updateApprovalStatus,
+    deleteById
 }

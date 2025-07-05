@@ -13,4 +13,6 @@ router.get('/pending-companies', authMiddleware, adminMiddleware, async (req: Re
     }
 });
 
+
+
 export default router;
