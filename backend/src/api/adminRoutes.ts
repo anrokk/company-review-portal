@@ -13,6 +13,22 @@ router.get('/pending-companies', authMiddleware, adminMiddleware, async (req: Re
     }
 });
 
+router.patch('/companies/:id/approve', authMiddleware, adminMiddleware, async (req: Request, res: Response) => {
+    try {
+        const approvedCompany = await companyRepository.updateApprovalStatus(req.params.id, true);
+        res.json(approvedCompany)
+    } catch (error) {
+        res.status(500).json({ message: 'Server error' });
+    }
+});
 
+router.delete('/companies/:id', authMiddleware, adminMiddleware, async (req: Request, res: Response) => {
+    try {
+        const sucess = await companyRepository.deleteById(req.params.id);
+        res.status(204).send();
+    } catch (error) {
+        res.status(500).json({ message: 'Server error' });
+    }
+});
 
 export default router;
