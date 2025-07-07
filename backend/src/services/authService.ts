@@ -20,7 +20,7 @@ const createTokens = async (user: FullUser) => {
     return { accessToken, refreshToken, user: userToReturn as User };
 };
 
-const register = async (userData: any): Promise<{ user: User, accessToken: string }> => {
+const register = async (userData: any): Promise<{ user: User, accessToken: string, refreshToken: string }> => {
     const { username, email, password } = userData;
 
     const existingUser = await userRepository.findByEmail(email);
@@ -36,11 +36,10 @@ const register = async (userData: any): Promise<{ user: User, accessToken: strin
         password_hash
     });
     
-    
     return createTokens(newUser);
 };
 
-const login = async (loginData: any): Promise<{ user: User, token: string }> => {
+const login = async (loginData: any): Promise<{user: User, accessToken: string, refreshToken: string}> => {
     const { email, password } = loginData;
 
     const user = await userRepository.findByEmail(email);
@@ -52,24 +51,8 @@ const login = async (loginData: any): Promise<{ user: User, token: string }> => 
     if (!isPasswordValid) {
         throw new Error('Invalid credentials');
     }
-
-    const payloadToSign = { id: user.id, email: user.email, role: user.role };
-    const token = jwt.sign(
-        payloadToSign,
-        process.env.JWT_SECRET as string,
-        { expiresIn: '1h' }
-    );
-
-    const userToReturn: User = {
-        id: user.id,
-        username: user.username,
-        email: user.email,
-        role: user.role,
-        created_at: user.created_at,
-        updated_at: user.updated_at
-    };
-
-    return { user: userToReturn as User, token };
+    
+    return createTokens(user);
 };
 
 export default {
