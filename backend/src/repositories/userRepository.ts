@@ -50,9 +50,18 @@ const updateRefreshTokenHash = async (userId: string, refreshTokenHash: string):
     return result.rowCount === 1;
 };
 
+const findByRefreshTokenHash = async (refreshTokenHash: string): Promise<FullUser | null> => {
+    const result: QueryResult<FullUser> = await db.query(
+        'SELECT * FROM users WHERE refresh_token_hash = $1',
+        [refreshTokenHash]
+    );
+    return result.rows[0] || null;
+};
+
 export default {
     findByEmail,
     findById,
     create,
-    updateRefreshTokenHash
+    updateRefreshTokenHash,
+    findByRefreshTokenHash
 };

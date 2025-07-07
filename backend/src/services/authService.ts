@@ -1,8 +1,11 @@
 import bcrypt from 'bcryptjs';
 import jwt from 'jsonwebtoken';
-import { randomBytes } from 'crypto';
+import { randomBytes, createHash } from 'crypto';
 import userRepository, { FullUser, User } from '../repositories/userRepository';
 
+const hashToken = (token: string): string => {
+    return createHash('sha256').update(token).digest('hex');
+};
 
 const createTokens = async (user: FullUser) => {
     const accessToken = jwt.sign(
@@ -12,7 +15,7 @@ const createTokens = async (user: FullUser) => {
     );
 
     const refreshToken = randomBytes(40).toString('hex');
-    const refreshTokenHash = await bcrypt.hash(refreshToken, 10);
+    const refreshTokenHash = hashToken(refreshToken);
     await userRepository.updateRefreshTokenHash(user.id, refreshTokenHash);
 
     const { password_hash, refresh_token_hash, ...userToReturn } = user;
@@ -55,7 +58,28 @@ const login = async (loginData: any): Promise<{user: User, accessToken: string, 
     return createTokens(user);
 };
 
+const refreshToken = async (incomingRefreshToken: string) => {
+    const hashedToken = hashToken(incomingRefreshToken);
+
+    const user = await userRepository.findByRefreshTokenHash(hashedToken);
+
+    if (!user) {
+        throw new Error('Invalid refresh token');
+    };
+
+    const accessToken = jwt.sign(
+        { id: user.id, email: user.email, role: user.role },
+        process.env.JWT_SECRET as string,
+        { expiresIn: '15m' }
+    );
+
+    const { password_hash, refresh_token_hash, ...userToReturn } = user;
+
+    return { accessToken, user: userToReturn as User };
+};
+
 export default {
     register,
-    login
+    login,
+    refreshToken
 };
