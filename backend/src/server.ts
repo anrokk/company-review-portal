@@ -7,11 +7,13 @@ import companyRoutes from './api/companyRoutes';
 import authRoutes from './api/authRoutes';
 import reviewRoutes from './api/reviewRoutes';
 import adminRoutes from './api/adminRoutes'; 
+import cookieParser from 'cookie-parser';
 
 const app: Express = express();
 
 app.use(cors());
 app.use(express.json());
+app.use(cookieParser());
 
 app.get('/', (req, res) => {
     res.status(200).send('OK');

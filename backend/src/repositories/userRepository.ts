@@ -10,38 +10,49 @@ export interface User {
     updated_at: Date;
 }
 
-interface UserWithPassword extends User {
+export interface FullUser extends User {
     password_hash: string;
-    role: string;
+    refresh_token_hash: string | null;
 }
 
-const findByEmail = async (email: string): Promise<UserWithPassword | null> => {
-    const result: QueryResult<UserWithPassword> = await db.query(
+
+const findByEmail = async (email: string): Promise<FullUser | null> => {
+    const result: QueryResult<FullUser> = await db.query(
         'SELECT * FROM users WHERE email = $1',
         [email]
     );
     return result.rows[0] || null;
 };
 
-const findById = async (id: string): Promise<UserWithPassword | null> => {
-    const result: QueryResult<UserWithPassword> = await db.query(
+const findById = async (id: string): Promise<FullUser | null> => {
+    const result: QueryResult<FullUser> = await db.query(
         'SELECT * FROM users WHERE id = $1',
         [id]
     );
     return result.rows[0] || null;
 }
 
-const create = async (userData: { username: string, email: string, password_hash: string }): Promise<User> => {
+const create = async (userData: { username: string, email: string, password_hash: string }): Promise<FullUser> => {
     const { username, email, password_hash } = userData;
-    const result: QueryResult<User> = await db.query(
-        'INSERT INTO users (username, email, password_hash) VALUES ($1, $2, $3) RETURNING id, username, email, role, created_at, updated_at',
+    const result: QueryResult<FullUser> = await db.query(
+        'INSERT INTO users (username, email, password_hash) VALUES ($1, $2, $3) RETURNING *',
         [username, email, password_hash]
     );
     return result.rows[0];
 };
 
+const updateRefreshTokenHash = async (userId: string, refreshTokenHash: string): Promise<boolean> => {
+    const result = await db.query(
+        'UPDATE users SET refresh_token_hash = $1 WHERE id = $2',
+        [refreshTokenHash, userId]
+    );
+    
+    return result.rowCount === 1;
+};
+
 export default {
     findByEmail,
     findById,
-    create
+    create,
+    updateRefreshTokenHash
 };

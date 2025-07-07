@@ -1,10 +1,28 @@
 import bcrypt from 'bcryptjs';
 import jwt from 'jsonwebtoken';
-import userRepository, { User } from '../repositories/userRepository';
+import { randomBytes } from 'crypto';
+import userRepository, { FullUser, User } from '../repositories/userRepository';
 
-const register = async (userData: any): Promise<{user: User, token: string}> => {
+
+const createTokens = async (user: FullUser) => {
+    const accessToken = jwt.sign(
+        { id: user.id, email: user.email, role: user.role },
+        process.env.JWT_SECRET as string,
+        { expiresIn: '15m' }
+    );
+
+    const refreshToken = randomBytes(40).toString('hex');
+    const refreshTokenHash = await bcrypt.hash(refreshToken, 10);
+    await userRepository.updateRefreshTokenHash(user.id, refreshTokenHash);
+
+    const { password_hash, refresh_token_hash, ...userToReturn } = user;
+
+    return { accessToken, refreshToken, user: userToReturn as User };
+};
+
+const register = async (userData: any): Promise<{ user: User, accessToken: string }> => {
     const { username, email, password } = userData;
-    
+
     const existingUser = await userRepository.findByEmail(email);
     if (existingUser) {
         throw new Error('User with this email already exists');
@@ -17,17 +35,12 @@ const register = async (userData: any): Promise<{user: User, token: string}> => 
         email,
         password_hash
     });
-
-    const token = jwt.sign(
-        { id: newUser.id, email: newUser.email, role: newUser.role },
-        process.env.JWT_SECRET as string,
-        { expiresIn: '1h' }
-    );
-
-    return { user: newUser, token };
+    
+    
+    return createTokens(newUser);
 };
 
-const login = async (loginData: any): Promise<{ user: User, token: string}> => {
+const login = async (loginData: any): Promise<{ user: User, token: string }> => {
     const { email, password } = loginData;
 
     const user = await userRepository.findByEmail(email);
