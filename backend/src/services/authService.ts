@@ -1,18 +1,20 @@
 import bcrypt from 'bcryptjs';
-import jwt from 'jsonwebtoken';
+import { SignJWT, jwtVerify } from 'jose';
 import { randomBytes, createHash } from 'crypto';
 import userRepository, { FullUser, User } from '../repositories/userRepository';
+
+const JWT_SECRET = new TextEncoder().encode(process.env.JWT_SECRET as string);
 
 const hashToken = (token: string): string => {
     return createHash('sha256').update(token).digest('hex');
 };
 
 const createTokens = async (user: FullUser) => {
-    const accessToken = jwt.sign(
-        { id: user.id, email: user.email, role: user.role },
-        process.env.JWT_SECRET as string,
-        { expiresIn: '15s' }
-    );
+    const accessToken = await new SignJWT({ id: user.id, email: user.email, role: user.role })
+    .setProtectedHeader({ alg: 'HS256' })
+    .setIssuedAt()
+    .setExpirationTime('15m')
+    .sign(JWT_SECRET);
 
     const refreshToken = randomBytes(40).toString('hex');
     const refreshTokenHash = hashToken(refreshToken);
@@ -67,11 +69,11 @@ const refreshToken = async (incomingRefreshToken: string) => {
         throw new Error('Invalid refresh token');
     };
 
-    const accessToken = jwt.sign(
-        { id: user.id, email: user.email, role: user.role },
-        process.env.JWT_SECRET as string,
-        { expiresIn: '15m' }
-    );
+    const accessToken = await new SignJWT({ id: user.id, email: user.email, role: user.role })
+        .setProtectedHeader({ alg: 'HS256' })
+        .setIssuedAt()
+        .setExpirationTime('15m')
+        .sign(JWT_SECRET);
 
     const { password_hash, refresh_token_hash, ...userToReturn } = user;
 

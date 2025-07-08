@@ -1,25 +1,23 @@
 import { Request, Response, NextFunction } from 'express';
-import jwt from 'jsonwebtoken';
+import { jwtVerify } from 'jose';
 
-interface JwtPayload {
-    id: string;
-}
+const JWT_SECRET = new TextEncoder().encode(process.env.JWT_SECRET as string);
 
-const authMiddleware = (req: Request, res: Response, next: NextFunction): void => {
+const authMiddleware = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
     const authHeader = req.headers['authorization'];
     const token = authHeader && authHeader.split(' ')[1];
 
     if (!token) {
-        res.sendStatus(401);
+        res.status(401).json({ error: 'No token provided' });
         return;
     }
 
     try {
-        const decoded = jwt.verify(token, process.env.JWT_SECRET as string) as JwtPayload;
-        req.userId = decoded.id;
+        const { payload } = await jwtVerify(token, JWT_SECRET);
+        req.userId = payload.id as string;;
         next();
     } catch (err) {
-        res.sendStatus(403);
+        res.status(403).json({ error: 'Invalid token' });
         return;
     }
 };
