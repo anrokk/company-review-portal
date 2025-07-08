@@ -1,5 +1,6 @@
 import express, { Request, Response, Router } from 'express';
 import authService from '../services/authService';
+import authMiddleware from '../middleware/authMiddleware';
 
 const router: Router = express.Router();
 
@@ -29,7 +30,7 @@ router.post('/login', async (req: Request, res: Response): Promise<any> => {
   try {
     const { user, accessToken, refreshToken } = await authService.login(req.body);
     setTokenCookie(res, refreshToken);
-    return res.status(200).json({ user, accessToken, refreshToken });
+    return res.status(200).json({ user, accessToken });
   } catch (err) {
     const message = err instanceof Error ? err.message : 'An unknown error occurred';
     const statusCode = (err instanceof Error && err.message === 'Invalid credentials') ? 401 : 500;
@@ -43,13 +44,20 @@ router.post('/refresh', async (req: Request, res: Response): Promise<any> => {
     const { accessToken, user } = await authService.refreshToken(token);
     return res.json({ accessToken, user });
   } catch (err) {
-    return res.status(401).json({ message: 'Invalid refresh token' });
+    const message = err instanceof Error ? err.message : 'An unknown error occurred';
+    return res.status(401).json({ message });
   }
 });
 
-router.post('/logout', async (req: Request, res: Response): Promise<any> => {
-  res.clearCookie('jid', { path: '/api/auth' });
-  return res.json({ message: 'Logged out successfully' });
+router.post('/logout', authMiddleware, async (req: Request, res: Response): Promise<any> => {
+  try {
+    await authService.logout(req.userId!);
+    res.clearCookie('jid', { path: '/api/auth' });
+    return res.json({ message: 'Logged out' });
+  } catch (err) {
+    const message = err instanceof Error ? err.message : 'An unknown error occurred';
+    return res.status(401).json({ message });
+  }
 });
 
 export default router;

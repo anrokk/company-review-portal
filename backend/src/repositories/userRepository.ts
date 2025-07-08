@@ -41,7 +41,7 @@ const create = async (userData: { username: string, email: string, password_hash
     return result.rows[0];
 };
 
-const updateRefreshTokenHash = async (userId: string, refreshTokenHash: string): Promise<boolean> => {
+const updateRefreshTokenHash = async (userId: string, refreshTokenHash: string | null): Promise<boolean> => {
     const result = await db.query(
         'UPDATE users SET refresh_token_hash = $1 WHERE id = $2',
         [refreshTokenHash, userId]

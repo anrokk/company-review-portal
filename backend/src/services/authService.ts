@@ -78,8 +78,13 @@ const refreshToken = async (incomingRefreshToken: string) => {
     return { accessToken, user: userToReturn as User };
 };
 
+const logout = async (userId: string) => {
+    await userRepository.updateRefreshTokenHash(userId, null);
+};
+
 export default {
     register,
     login,
-    refreshToken
+    refreshToken,
+    logout
 };
