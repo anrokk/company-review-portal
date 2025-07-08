@@ -2,7 +2,6 @@
 
 import { FormEvent, useState } from "react";
 import { createReview } from "@/services/apiService";
-import { useAuth } from "@/context/AuthContext";
 import { useRouter } from "next/navigation";
 
 
@@ -11,7 +10,6 @@ interface CreateReviewFormProps {
 }
 
 export default function CreateReviewForm({ companyId }: CreateReviewFormProps) {
-    const { token } = useAuth();
     const router = useRouter();
 
     const [rating, setRating] = useState(0);
@@ -23,10 +21,6 @@ export default function CreateReviewForm({ companyId }: CreateReviewFormProps) {
 
     const handleSubmit = async (e: FormEvent) => {
         e.preventDefault();
-        if (!token) {
-            setError("You must be logged in to create a review.");
-            return;
-        }
         if (rating === 0) {
             setError("Please select a rating between 1 and 5.");
             return;
@@ -40,9 +34,10 @@ export default function CreateReviewForm({ companyId }: CreateReviewFormProps) {
                 rating,
                 role_applied_for: role,
                 experience_text: text,
-            }, token);
+            });
 
             router.push(`/company/${companyId}`);
+            router.refresh();
 
         } catch (err: any) {
             setError(err.message);

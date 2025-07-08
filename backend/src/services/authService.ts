@@ -11,7 +11,7 @@ const createTokens = async (user: FullUser) => {
     const accessToken = jwt.sign(
         { id: user.id, email: user.email, role: user.role },
         process.env.JWT_SECRET as string,
-        { expiresIn: '15m' }
+        { expiresIn: '15s' }
     );
 
     const refreshToken = randomBytes(40).toString('hex');
@@ -78,8 +78,16 @@ const refreshToken = async (incomingRefreshToken: string) => {
     return { accessToken, user: userToReturn as User };
 };
 
-const logout = async (userId: string) => {
-    await userRepository.updateRefreshTokenHash(userId, null);
+const logout = async (incomingRefreshToken: string | undefined) => {
+    if (!incomingRefreshToken) {
+        return;
+    }
+    const hashedToken = hashToken(incomingRefreshToken);
+    const user = await userRepository.findByRefreshTokenHash(hashedToken);
+
+    if (user) {
+        await userRepository.updateRefreshTokenHash(user.id, null);
+    }
 };
 
 export default {

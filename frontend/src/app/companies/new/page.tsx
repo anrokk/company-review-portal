@@ -8,22 +8,17 @@ import { createCompany } from '@/services/apiService';
 
 export default function NewCompanyPage() {
     const router = useRouter();
-    const { token } = useAuth();
     const [name, setName] = useState('');
     const [error, setError] = useState<string | null>(null);
     const [isLoading, setIsLoading] = useState(false);
 
     const handleSubmit = async (e: FormEvent) => {
         e.preventDefault();
-        if (!token) {
-            setError('You must be logged in to create a company.');
-            return;
-        }
         setError(null);
         setIsLoading(true);
 
         try {
-            const newCompany = await createCompany({ name }, token);
+            const newCompany = await createCompany({ name, logo_url: undefined});
             router.push(`/company/${newCompany.id}`);
         } catch (err: any) {
             setError(err.message);

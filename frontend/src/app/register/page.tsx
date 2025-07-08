@@ -21,8 +21,8 @@ export default function RegisterPage() {
         setIsLoading(true);
 
         try {
-            const { user, token } = await registerUser({ username, email, password });
-            auth.login(token, user);
+            const { user, accessToken } = await registerUser({ username, email, password });
+            auth.login(user, accessToken);
             router.push('/');
         } catch (err: any) {
             setError(err.message);

@@ -8,36 +8,26 @@ import CreateReviewForm from "@/components/CreateReviewForm";
 import { Company } from "@/types/api";
 
 export default function CreateReviewPage() {
-    const router = useRouter();
     const params = useParams();
-    const { isAuthenticated, isLoading: isAuthLoading } = useAuth();
+    const { user } = useAuth();
     const companyId = params.id as string;
 
     const [company, setCompany] = useState<Company | null>(null);
-    const [isPageLoading, setIsPageLoading] = useState(true);
+    const [isLoading, setIsLoading] = useState(true);
 
     useEffect(() => {
-        if (isAuthLoading) {
-            return;
-        }
-
-        if (!isAuthenticated) {
-            router.push('/login');
-            return;
-        }
-
         const fetchCompany = async () => {
             if (companyId) {
                 const companyData = await getCompanyById(companyId);
                 setCompany(companyData);
             }
-            setIsPageLoading(false);
+            setIsLoading(false);
         };
 
         fetchCompany();
-    }, [isAuthenticated, companyId, router]);
+    }, [companyId]);
 
-    if (isAuthLoading || isPageLoading) {
+    if (isLoading) {
         return <div className="text-center">Loading...</div>;
     }
 

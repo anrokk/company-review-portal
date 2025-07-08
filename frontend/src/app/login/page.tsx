@@ -20,8 +20,8 @@ export default function LoginPage() {
         setIsLoading(true);
 
         try {
-            const { user, token } = await loginUser({ email, password });
-            auth.login(token, user);
+            const { user, accessToken } = await loginUser({ email, password });
+            auth.login(user, accessToken);
             router.push('/');
         } catch (err: any) {
             setError(err.message);

@@ -49,9 +49,10 @@ router.post('/refresh', async (req: Request, res: Response): Promise<any> => {
   }
 });
 
-router.post('/logout', authMiddleware, async (req: Request, res: Response): Promise<any> => {
+router.post('/logout', async (req: Request, res: Response): Promise<any> => {
   try {
-    await authService.logout(req.userId!);
+    const token = req.cookies.jid;
+    await authService.logout(token);
     res.clearCookie('jid', { path: '/api/auth' });
     return res.json({ message: 'Logged out' });
   } catch (err) {

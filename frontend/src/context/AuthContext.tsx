@@ -3,7 +3,6 @@
 import { createContext, useContext, useState, useEffect, ReactNode } from 'react';
 import { User } from '@/types/api';
 import { api, setAccessToken, logoutUser } from '@/services/apiService';
-import { log } from 'console';
 
 interface AuthContextType {
     isAuthenticated: boolean;
