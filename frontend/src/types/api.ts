@@ -31,3 +31,13 @@ export interface User {
 export interface ReviewWithUsername extends Review {
     username: string;
 }
+
+export interface PaginatedCompanies {
+  data: Company[];
+  pagination: {
+    totalItems: number;
+    totalPages: number;
+    currentPage: number;
+    hasNextPage: boolean;
+  };
+}

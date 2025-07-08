@@ -2,53 +2,56 @@
 
 import { createContext, useContext, useState, useEffect, ReactNode } from 'react';
 import { User } from '@/types/api';
-import Cookies from 'js-cookie';
+import { api, setAccessToken, logoutUser } from '@/services/apiService';
+import { log } from 'console';
 
 interface AuthContextType {
     isAuthenticated: boolean;
     isLoading: boolean;
     user: User | null;
-    token: string | null;
-    login: (token: string, user: User) => void;
-    logout: () => void;
+    login: (userData: User, token: string) => void;
+    logout: () => Promise<void>;
 }
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
 export const AuthProvider = ({ children }: { children: ReactNode }) => {
     const [user, setUser] = useState<User | null>(null);
-    const [token, setToken] = useState<string | null>(null);
     const [isLoading, setIsLoading] = useState<boolean>(true);
 
     useEffect(() => {
-        const storedToken = Cookies.get('token');
-        const storedUser = Cookies.get('user');
-
-        if (storedToken && storedUser) {
-            setUser(JSON.parse(storedUser));
-            setToken(storedToken);
-        }
-        setIsLoading(false);
+        const checkUserStatus = async () => {
+            try {
+                const { data } = await api.post('api/auth/refresh');
+                login(data.user, data.accessToken);
+            } catch (error) {
+                setUser(null);
+                setAccessToken('');
+            } finally {
+                setIsLoading(false);
+            }
+        };
+        checkUserStatus();
     }, []);
 
-    const login = (tokenData: string, userData: User) => {
-        Cookies.set('token', tokenData, { expires: 7, secure: true });
-        Cookies.set('user', JSON.stringify(userData), { expires: 7, secure: true });
-        setToken(tokenData);
+    const login = (userData: User, token: string) => {
         setUser(userData);
+        setAccessToken(token);
     };
 
-    const logout = () => {
-        Cookies.remove('token');
-        Cookies.remove('user');
-        setToken(null);
-        setUser(null);
+    const logout = async () => {
+        try {
+            await logoutUser();
+        } finally {
+            setUser(null);
+            setAccessToken('');
+        }
     };
 
-    const isAuthenticated = !!token;
+    const isAuthenticated = !!user;
 
     return (
-        <AuthContext.Provider value={{ isAuthenticated, isLoading, user, token, login, logout }}>
+        <AuthContext.Provider value={{ isAuthenticated, isLoading, user, login, logout }}>
             {children}
         </AuthContext.Provider>
     );
