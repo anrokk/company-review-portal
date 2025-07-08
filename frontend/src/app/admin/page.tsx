@@ -6,17 +6,16 @@ import { Company } from "@/types/api";
 import { getPendingCompanies, approveCompany, deleteCompany } from "@/services/adminService";
 
 export default function AdminPage() {
-  const { token } = useAuth();
+  const { user, isLoading: isAuthLoading } = useAuth();
   const [pendingCompanies, setPendingCompanies] = useState<Company[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
 
   const fetchPendingCompanies = async () => {
-    if (!token) return;
+    setIsLoading(true);
     try {
-      setIsLoading(true);
-      const data = await getPendingCompanies(token);
+      const data = await getPendingCompanies();
       setPendingCompanies(data);
     } catch (error) {
       setError("Failed to fetch pending companies");
@@ -26,13 +25,14 @@ export default function AdminPage() {
   };
 
   useEffect(() => {
-    fetchPendingCompanies()
-  }, [token]);
+    if (!isAuthLoading) {
+      fetchPendingCompanies();
+    }
+  }, [isAuthLoading]);
 
   const handleApprove = async (companyId: string) => {
-    if (!token) return;
     try {
-      await approveCompany(companyId, token);
+      await approveCompany(companyId);
       fetchPendingCompanies();
     } catch (error) {
       setError("Failed to approve company");
@@ -40,14 +40,17 @@ export default function AdminPage() {
   };
 
   const handleDelete = async (companyId: string) => {
-    if (!token) return;
     try {
-      await deleteCompany(companyId, token);
+      await deleteCompany(companyId);
       fetchPendingCompanies();
     } catch (error) {
       setError("Failed to delete company");
     }
   };
+
+  if (isAuthLoading || user?.role !== 'admin') {
+    return <div className="text-center p-12">Verifying admin access...</div>;
+  }
 
   return (
     <div>
