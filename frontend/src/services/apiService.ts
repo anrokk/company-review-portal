@@ -42,7 +42,7 @@ export const getCompanies = async (page = 1, limit = 12, searchTerm = '') =>{
 };
 
 export const getCompanyById = async (companyId: string) => {
-    const { data } = await api.get<Company>(`/api/company/${companyId}`);
+    const { data } = await api.get<Company>(`/api/companies/${companyId}`);
     return data;
 };
 
