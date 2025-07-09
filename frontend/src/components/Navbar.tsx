@@ -30,6 +30,10 @@ const Navbar = () => {
             <div></div>
           ) : isAuthenticated ? (
             <>
+              <Link href="/profile" className="px-4 py-2 rounded-md text-sm font-medium text-white hover:bg-neutral-900 transition-all duration-300">
+                My Reviews
+              </Link>
+              <span className='text-gray '></span>
               <span className='text-gray-400 hidden sm:block'>{user?.username}</span>
               <button
                 onClick={handleLogout}

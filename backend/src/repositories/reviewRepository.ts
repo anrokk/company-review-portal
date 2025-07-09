@@ -36,7 +36,7 @@ const findByCompanyId = async (companyId: string): Promise<ReviewWithUsername[]>
 
 const findByUserId = async (userId: string): Promise<ReviewWithUsername[]> => {
     const result: QueryResult<ReviewWithUsername> = await db.query(
-        'SELECT r.*, u.username FROM reviews r JOIN users u ON r.user_id = u.id WHERE r.user_id = $1 ORDER BY r.created_at DESC',
+        'SELECT r.*, u.username, c.name AS company_name FROM reviews r JOIN users u ON r.user_id = u.id JOIN companies c ON r.company_id = c.id WHERE r.user_id = $1 ORDER BY r.created_at DESC',
         [userId]
     );
     return result.rows;

@@ -51,6 +51,11 @@ export const getReviewsForCompany = async (companyId: string) => {
     return data;
 };
 
+export const getUserReviews = async () => {
+    const { data } = await api.get<ReviewWithUsername[]>('/api/reviews/my-reviews');
+    return data;
+}
+
 //AUTHENTICATION
 
 export const registerUser = async (userData: any) =>  {

@@ -30,6 +30,7 @@ export interface User {
 
 export interface ReviewWithUsername extends Review {
     username: string;
+    company_name?: string;
 }
 
 export interface PaginatedCompanies {
