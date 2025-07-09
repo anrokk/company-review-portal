@@ -1,7 +1,6 @@
 'use client';
 
 import { useState, FormEvent } from 'react';
-import { registerUser } from '@/services/apiService';
 import { useAuth } from '@/context/AuthContext';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
@@ -21,8 +20,7 @@ export default function RegisterPage() {
         setIsLoading(true);
 
         try {
-            const { user, accessToken } = await registerUser({ username, email, password });
-            auth.login(user, accessToken);
+            await auth.register({ username, email, password });
             router.push('/');
         } catch (err: any) {
             setError(err.message);

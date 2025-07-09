@@ -1,7 +1,6 @@
 "use client";
 
 import { useState, FormEvent } from 'react';
-import { loginUser } from '@/services/apiService';
 import { useAuth } from '@/context/AuthContext';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
@@ -20,8 +19,7 @@ export default function LoginPage() {
         setIsLoading(true);
 
         try {
-            const { user, accessToken } = await loginUser({ email, password });
-            auth.login(user, accessToken);
+            await auth.login({ email, password });
             router.push('/');
         } catch (err: any) {
             setError(err.message);

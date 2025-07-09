@@ -53,7 +53,7 @@ router.post('/logout', async (req: Request, res: Response): Promise<any> => {
   try {
     const token = req.cookies.jid;
     await authService.logout(token);
-    res.clearCookie('jid', { path: '/api/auth' });
+    res.clearCookie('jid', { path: '/' });
     return res.json({ message: 'Logged out' });
   } catch (err) {
     const message = err instanceof Error ? err.message : 'An unknown error occurred';

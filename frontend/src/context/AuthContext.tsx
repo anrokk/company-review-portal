@@ -2,30 +2,33 @@
 
 import { createContext, useContext, useState, useEffect, ReactNode } from 'react';
 import { User } from '@/types/api';
-import { api, setAccessToken, logoutUser } from '@/services/apiService';
+import { setAccessToken, loginUser as apiLogin, registerUser as apiRegister, logoutUser as apiLogout, api } from '@/services/apiService';
+import Cookies from 'js-cookie';
 
 interface AuthContextType {
     isAuthenticated: boolean;
     isLoading: boolean;
     user: User | null;
-    login: (userData: User, token: string) => void;
-    logout: () => Promise<void>;
+    register: (userData: any) => Promise<{ user: User, accessToken: string }>;
+    login: (credentials: any) => Promise<{ user: User, accessToken: string }>;
+    logout: () => void;
 }
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
 export const AuthProvider = ({ children }: { children: ReactNode }) => {
     const [user, setUser] = useState<User | null>(null);
-    const [isLoading, setIsLoading] = useState<boolean>(true);
+    const [isLoading, setIsLoading] = useState(true);
 
     useEffect(() => {
         const checkUserStatus = async () => {
             try {
                 const { data } = await api.post('api/auth/refresh');
-                login(data.user, data.accessToken);
+                Cookies.set('token', data.accessToken, { expires: 1 / 96 });
+                setUser(data.user);
+                setAccessToken(data.accessToken);
             } catch (error) {
                 setUser(null);
-                setAccessToken('');
             } finally {
                 setIsLoading(false);
             }
@@ -33,15 +36,27 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
         checkUserStatus();
     }, []);
 
-    const login = (userData: User, token: string) => {
-        setUser(userData);
-        setAccessToken(token);
+    const login = async (credentials: any) => {
+        const { user, accessToken } = await apiLogin(credentials);
+        Cookies.set('token', accessToken, { expires: 1 / 96 });
+        setUser(user);
+        setAccessToken(accessToken);
+        return { user, accessToken };
+    };
+
+    const register = async (userData: any) => {
+        const { user, accessToken } = await apiRegister(userData);
+        Cookies.set('token', accessToken, { expires: 1 / 96 });
+        setUser(user);
+        setAccessToken(accessToken);
+        return { user, accessToken };
     };
 
     const logout = async () => {
         try {
-            await logoutUser();
+            await apiLogout();
         } finally {
+            Cookies.remove('token');
             setUser(null);
             setAccessToken('');
         }
@@ -50,7 +65,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     const isAuthenticated = !!user;
 
     return (
-        <AuthContext.Provider value={{ isAuthenticated, isLoading, user, login, logout }}>
+        <AuthContext.Provider value={{ isAuthenticated, isLoading, user, register, login, logout }}>
             {children}
         </AuthContext.Provider>
     );
