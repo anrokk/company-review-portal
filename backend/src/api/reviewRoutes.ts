@@ -40,8 +40,18 @@ router.get('/company/:companyId', async (req: Request, res: Response): Promise<a
         const reviews = await reviewService.getReviewsForCompany(companyId);
         return res.json(reviews);
     } catch (err) {
-        if (err instanceof Error) console.error(err.message);
         return res.status(500).send('Server Error');
+    }
+});
+
+// Get all reviews by user
+router.get('/my-reviews', authMiddleware, async (req: Request, res: Response): Promise<any> => {
+    try {
+        const userId = req.userId as string;
+        const reviews = await reviewService.getReviewsByUser(userId);
+        return res.json(reviews);
+    } catch (err) {
+       return res.status(500).send('Server Error');
     }
 });
 

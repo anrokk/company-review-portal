@@ -8,7 +8,12 @@ const getReviewsForCompany = async (companyId: string) => {
     return reviewRepository.findByCompanyId(companyId);
 };
 
+const getReviewsByUser = async (userId: string) => {
+    return reviewRepository.findByUserId(userId);
+}
+
 export default {
     createReview,
-    getReviewsForCompany
+    getReviewsForCompany,
+    getReviewsByUser
 };
