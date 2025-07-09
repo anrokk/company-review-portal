@@ -37,18 +37,7 @@ app.get('/', (req: Request, res: Response) => {
 
 const PORT: string | number = process.env.port || 5001;
 
-const testDbConnection = async (): Promise<void> => {
-    try {
-        await db.query('SELECT NOW()');
-        console.log('Database connection successful');
-    } catch (error) {
-        console.error('Database connection failed:', error);
-        process.exit(1);
-    }
-};
-
 const startServer = async (): Promise<void> => {
-    await testDbConnection();
     app.listen(PORT, () => {
         console.log(`Server is running on port ${PORT}`);
     });
