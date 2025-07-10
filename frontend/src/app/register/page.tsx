@@ -23,7 +23,7 @@ export default function RegisterPage() {
             await auth.register({ username, email, password });
             router.push('/');
         } catch (err: any) {
-            setError(err.message);
+            setError(err.response.data.message);
         } finally {
             setIsLoading(false);
         }

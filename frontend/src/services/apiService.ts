@@ -18,11 +18,18 @@ export const api = axios.create({
     withCredentials: true
 });
 
+const publicAuthRoutes = [
+    '/api/auth/login',
+    '/api/auth/register',
+    '/api/auth/refresh'
+];
+
 api.interceptors.response.use(
     (response) => response,
     async (error) => {
         const originalRequest = error.config;
-        if (error.response.status === 401 && !originalRequest._retry && originalRequest.url !== '/api/auth/refresh') {
+        const url = originalRequest.url;
+        if (error.response.status === 401 && !originalRequest._retry && !publicAuthRoutes.includes(url)) {
             originalRequest._retry = true;
             try {
                 const { data } = await api.post('/api/auth/refresh');

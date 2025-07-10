@@ -61,8 +61,11 @@ const login = async (loginData: any): Promise<{user: User, accessToken: string, 
 };
 
 const refreshToken = async (incomingRefreshToken: string) => {
-    const hashedToken = hashToken(incomingRefreshToken);
+    if (!incomingRefreshToken) {
+        throw new Error('Session not found. Please log in.')
+    }
 
+    const hashedToken = hashToken(incomingRefreshToken);
     const user = await userRepository.findByRefreshTokenHash(hashedToken);
 
     if (!user) {
