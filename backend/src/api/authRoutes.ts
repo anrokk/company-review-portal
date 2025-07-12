@@ -1,6 +1,5 @@
 import express, { Request, Response, Router } from 'express';
 import authService from '../services/authService';
-import authMiddleware from '../middleware/authMiddleware';
 
 const router: Router = express.Router();
 
@@ -49,6 +48,17 @@ router.post('/refresh', async (req: Request, res: Response): Promise<any> => {
   }
 });
 
+/**
+ * @swagger
+ * /api/auth/logout:
+ *   post:
+ *     summary: Log out a user
+ *     tags: [Auth]
+ *     description: Invalidates the user's session by clearing the refresh token.
+ *     responses:
+ *       200:
+ *         description: Logout successful.
+ */
 router.post('/logout', async (req: Request, res: Response): Promise<any> => {
   try {
     const token = req.cookies.jid;

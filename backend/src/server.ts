@@ -3,6 +3,10 @@ import express, { Express, Request, Response } from 'express';
 import cors from 'cors';
 import db from './config/db';
 import { apiLimiter, authLimiter } from './middleware/rateLimitMiddleware';
+
+import swaggerUi from 'swagger-ui-express';
+import swaggerDocs from './config/swagger';
+
 import companyRoutes from './api/companyRoutes';
 import authRoutes from './api/authRoutes';
 import reviewRoutes from './api/reviewRoutes';
@@ -14,6 +18,8 @@ const app: Express = express();
 app.use(cors({ origin: process.env.CORS_ORIGIN, credentials: true }));
 app.use(express.json());
 app.use(cookieParser());
+
+app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerDocs));
 
 app.get('/', (req, res) => {
     res.status(200).send('OK');
@@ -29,11 +35,6 @@ app.use('/api/companies', companyRoutes);
 app.use('/api/auth', authRoutes);
 app.use('/api/reviews', reviewRoutes);
 app.use('/api/admin', adminRoutes);
-
-
-app.get('/', (req: Request, res: Response) => {
-    res.send('Hello world!');
-});
 
 const PORT: string | number = process.env.port || 5001;
 
