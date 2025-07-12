@@ -1,7 +1,28 @@
 import express, { Request, Response, Router } from 'express';
+import { z } from 'zod';
 import authService from '../services/authService';
+import validate from '../middleware/validationMiddleware';
+
 
 const router: Router = express.Router();
+
+const registerSchema = z.object({
+  body: z.object({
+    username: z.string().min(3, 'Usename must be at least 3 characters long'),
+    email: z.string().email('Invalid email address'),
+    password: z.string()
+      .min(6, 'Password must be at least 6 characters long')
+      .regex(/[A-Z]/, 'Password must contain at least one uppercase letter')
+      .regex(/[!@#$%^&*]/, 'Password must contain at least one special symbol (!@#$%^&*)')
+  })
+});
+
+const loginSchema = z.object({
+  body: z.object({
+    email: z.string().email('Invalid email address'),
+    password: z.string().min(1, 'Password is required')
+  })
+});
 
 const setTokenCookie = (res: Response, refreshToken: string): void => {
   res.cookie('jid', refreshToken, {
@@ -13,7 +34,7 @@ const setTokenCookie = (res: Response, refreshToken: string): void => {
   });
 };
 
-router.post('/register', async (req: Request, res: Response): Promise<any> => {
+router.post('/register', validate(registerSchema), async (req: Request, res: Response): Promise<any> => {
   try {
     const { user, accessToken, refreshToken } = await authService.register(req.body);
     setTokenCookie(res, refreshToken);
@@ -25,7 +46,7 @@ router.post('/register', async (req: Request, res: Response): Promise<any> => {
   }
 });
 
-router.post('/login', async (req: Request, res: Response): Promise<any> => {
+router.post('/login', validate(loginSchema), async (req: Request, res: Response): Promise<any> => {
   try {
     const { user, accessToken, refreshToken } = await authService.login(req.body);
     setTokenCookie(res, refreshToken);
@@ -37,6 +58,19 @@ router.post('/login', async (req: Request, res: Response): Promise<any> => {
   }
 });
 
+/**
+ * @swagger
+ * /api/auth/refresh:
+ *   post:
+ *     summary: Refresh an access token
+ *     tags: [Auth]
+ *     description: Uses the httpOnly refresh token cookie (jid) to issue a new access token.
+ *     responses:
+ *       200:
+ *         description: New access token created successfully.
+ *       401:
+ *         description: Invalid or missing refresh token.
+ */
 router.post('/refresh', async (req: Request, res: Response): Promise<any> => {
   const token = req.cookies.jid;
   try {
@@ -52,7 +86,7 @@ router.post('/refresh', async (req: Request, res: Response): Promise<any> => {
  * @swagger
  * /api/auth/logout:
  *   post:
- *     summary: Log out a user
+ *     summary: Log out an user
  *     tags: [Auth]
  *     description: Invalidates the user's session by clearing the refresh token.
  *     responses:
