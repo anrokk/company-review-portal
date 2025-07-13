@@ -34,6 +34,50 @@ const setTokenCookie = (res: Response, refreshToken: string): void => {
   });
 };
 
+/**
+ * @swagger
+ * tags:
+ *  name: Auth
+ *  description: User authentication and session management
+ */
+
+/**
+ * @swagger
+ * /api/auth/register:
+ *   post:
+ *     summary: Register a new user
+ *     tags: [Auth]
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             required:
+ *               - username
+ *               - email
+ *               - password
+ *             properties:
+ *               username:
+ *                 type: string
+ *                 minLength: 3
+ *                 example: johndoe
+ *               email:
+ *                 type: string
+ *                 format: email
+ *                 example: johndoe@gmail.com
+ *               password:
+ *                 type: string
+ *                 minLength: 6
+ *                 example: Password123!
+ *     responses:
+ *       201:
+ *         description: User registered successfully.
+ *       409:
+ *         description: User with this email already exists.
+ *       400:
+ *         description: Invalid input data.
+ */
 router.post('/register', validate(registerSchema), async (req: Request, res: Response): Promise<any> => {
   try {
     const { user, accessToken, refreshToken } = await authService.register(req.body);
