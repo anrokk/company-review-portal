@@ -90,6 +90,36 @@ router.post('/register', validate(registerSchema), async (req: Request, res: Res
   }
 });
 
+/**
+ * @swagger
+ * /api/auth/login:
+ *   post:
+ *     summary: Log in an existing user
+ *     tags: [Auth]
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             required:
+ *               - email
+ *               - password
+ *             properties:
+ *               email:
+ *                 type: string
+ *                 format: email
+ *                 example: johndoe@gmail.com
+ *               password:
+ *                 type: string
+ *                 minLength: 6
+ *                 example: Password123!
+ *     responses:
+ *       200:
+ *         description: Login successful.
+ *       401:
+ *         description: Invalid credentials.
+ */
 router.post('/login', validate(loginSchema), async (req: Request, res: Response): Promise<any> => {
   try {
     const { user, accessToken, refreshToken } = await authService.login(req.body);
