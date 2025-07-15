@@ -4,6 +4,15 @@ import adminMiddleware from '../middleware/adminMiddleware';
 import companyRepository from '../repositories/companyRepository';
 
 const router: Router = express.Router();
+
+/**
+ * @swagger
+ * tags:
+ *  name: Admin
+ *  description: Admin-only operations for content management
+ */
+
+
 router.get('/pending-companies', authMiddleware, adminMiddleware, async (req: Request, res: Response) => {
     try {
         const pendingCompanies = await companyRepository.findPending();
