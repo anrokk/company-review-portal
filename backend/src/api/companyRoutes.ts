@@ -23,8 +23,6 @@ const createCompanySchema = z.object({
  */
 
 
-
-
 /**
  * @swagger
  * /api/companies:
@@ -128,6 +126,7 @@ router.get('/:id', async (req: Request, res: Response): Promise<any> => {
         res.status(500).send('Server error');
     }
 });
+
 
 /**
  * @swagger
