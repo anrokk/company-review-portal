@@ -15,7 +15,64 @@ const createCompanySchema = z.object({
 });
 
 
-// GET /api/companies
+/**
+ * @swagger
+ * tags:
+ *  name: Companies
+ *  description: Public operations for viewing companies and protected operations for creating them
+ */
+
+
+
+
+/**
+ * @swagger
+ * /api/companies:
+ *   get:
+ *     summary: Retrieve a paginated list of approved companies
+ *     tags: [Companies]
+ *     parameters:
+ *       - in: query
+ *         name: page
+ *         schema:
+ *           type: integer
+ *           default: 1
+ *         description: The page number to retrieve
+ *       - in: query
+ *         name: limit
+ *         schema:
+ *           type: integer
+ *           default: 12
+ *         description: The number of companies to return per page.
+ *       - in: query
+ *         name: search
+ *         schema:
+ *           type: string
+ *         description: A search term to filter companies by name (case-insensitive).
+ *     responses:
+ *       200:
+ *         description: A paginated list of companies.
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties: 
+ *                 data:
+ *                   type: array
+ *                   items:
+ *                     $ref: '#/components/schemas/Company'
+ *                 pagination:
+ *                   type: object
+ *                   properties:
+ *                     totalItems:
+ *                       type: integer
+ *                     totalPages:
+ *                       type: integer
+ *                     currentPage:
+ *                       type: integer
+ *                     hasNextPage:
+ *                       type: boolean
+ */
 router.get('/', async (req: Request, res: Response) => {
     const page = parseInt(req.query.page as string, 10) || 1;
     const limit = parseInt(req.query.limit as string, 10) || 10;
@@ -32,7 +89,31 @@ router.get('/', async (req: Request, res: Response) => {
     }
 });
 
-// GET /api/companies/:id
+
+/**
+ * @swagger
+ * /api/companies/{id}:
+ *   get:
+ *     summary: Get a single approved company by its ID
+ *     tags: [Companies]
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         required: true
+ *         schema:
+ *           type: string
+ *           format: uuid
+ *         description: The ID of the company to retrieve.
+ *     responses:
+ *       200:
+ *         description: The requested company object.
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/Company'
+ *       404:
+ *         description: Company not found.
+ */
 router.get('/:id', async (req: Request, res: Response): Promise<any> => {
     try {
         const company = await companyService.getCompanyById(req.params.id);
@@ -48,7 +129,36 @@ router.get('/:id', async (req: Request, res: Response): Promise<any> => {
     }
 });
 
-// POST /api/companies
+/**
+ * @swagger
+ * /api/companies:
+ *   post:
+ *     summary: Submit a new company for approval
+ *     tags: [Companies]
+ *     security:
+ *       - bearerAuth: []
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             required:
+ *               - name
+ *             properties:
+ *               name:
+ *                 type: string
+ *                 example: 'New Tech Organization'
+ *     responses:
+ *       201:
+ *         description: Company submitted successfully and is pending approval.
+ *       400:
+ *         description: Invalid input data.
+ *       401:
+ *         description: Unauthorized, user must be logged in
+ *       409:
+ *         description: Company with this name already exists.
+ */
 router.post('/', authMiddleware, validate(createCompanySchema), async (req: Request, res: Response) => {
     try {
         const newCompany = await companyService.createCompany(req.body);
