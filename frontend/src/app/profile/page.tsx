@@ -37,7 +37,6 @@ export default function ProfilePage() {
             </div>
 
             <div className="mt-8">
-                <h2 className="text-3xl font-bold text-white text-center">Your Submitted Reviews</h2>
                 <div className="mt-8 space-y-6">
                     {reviews.length > 0 ?(
                         reviews.map(review => (

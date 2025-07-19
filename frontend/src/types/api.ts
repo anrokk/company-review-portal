@@ -42,3 +42,13 @@ export interface PaginatedCompanies {
     hasNextPage: boolean;
   };
 }
+
+export interface PaginatedReviews {
+  data: ReviewWithUsername[];
+  pagination: {
+    totalItems: number;
+    totalPages: number;
+    currentPage: number;
+    hasNextPage: boolean;
+  };
+}
