@@ -26,12 +26,27 @@ const create = async (reviewData: Omit<Review, 'id' | 'created_at' | 'updated_at
     return result.rows[0];
 };
 
-const findByCompanyId = async (companyId: string): Promise<ReviewWithUsername[]> => {
-    const result: QueryResult<ReviewWithUsername> = await db.query(
-        'SELECT r.*, u.username FROM reviews r JOIN users u ON r.user_id = u.id WHERE r.company_id = $1 ORDER BY r.created_at DESC',
-        [companyId]
-    );
-    return result.rows;
+const findByCompanyId = async (companyId: string, limit: number, offset: number) => {
+    const dataQuery = `
+        SELECT r.*, u.username 
+        FROM reviews r 
+        JOIN users u ON r.user_id = u.id 
+        WHERE r.company_id = $1 
+        ORDER BY r.created_at DESC 
+        LIMIT $2 OFFSET $3
+    `;
+
+    const countQuery = `SELECT COUNT(*) FROM reviews WHERE company_id = $1`;
+
+    const [dataResult, countResult] = await Promise.all([
+        db.query(dataQuery, [companyId, limit, offset]),
+        db.query(countQuery, [companyId])
+    ]);
+
+    return {
+        reviews: dataResult.rows,
+        totalCount: parseInt(countResult.rows[0].count, 10)
+    }
 };
 
 const findByUserId = async (userId: string): Promise<ReviewWithUsername[]> => {
