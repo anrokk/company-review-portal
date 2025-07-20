@@ -53,6 +53,11 @@ export const getCompanyById = async (companyId: string) => {
     return data;
 };
 
+export const getLatestReviews = async () => {
+    const { data } = await api.get<ReviewWithUsername[]>('api/reviews/latest');
+    return data;
+}
+
 export const getReviewsForCompany = async (companyId: string, page = 1, limit = 5) => {
     const { data } = await api.get<PaginatedReviews>(`/api/reviews/company/${companyId}?page=${page}&limit=${limit}`);
     return data;

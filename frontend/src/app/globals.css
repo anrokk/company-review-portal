@@ -5,3 +5,12 @@
         @apply scroll-smooth;
     }
 }
+
+.latest-reviews-scroll::-webkit-scrollbar {
+  height: 8px;
+  background: #18181b;
+}
+.latest-reviews-scroll::-webkit-scrollbar-thumb {
+  background: #27272a;
+  border-radius: 8px;
+}

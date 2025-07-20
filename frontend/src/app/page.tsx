@@ -1,7 +1,11 @@
 import Link from "next/link";
+import { getLatestReviews } from "@/services/apiService";
+import LatestReviews from "@/components/LatestReviews";
 
+export default async function Home() {
 
-export default function Home() {
+  const latestReviews = await getLatestReviews();
+
   return (
     <>
       <section className="py-20 sm:py-12">
@@ -32,7 +36,7 @@ export default function Home() {
             <h2 className="text-4xl font-bold text-white">How It Works</h2>
             <p className="mt-4 text-lg text-gray-400">Get started in three simple steps.</p>
           </div>
-          
+
           <div className="grid md:grid-cols-3 gap-12 text-center">
 
             <div className="flex flex-col items-center">
@@ -75,6 +79,8 @@ export default function Home() {
           </div>
         </div>
       </section>
+
+      <LatestReviews reviews={latestReviews} />
     </>
   );
 }
