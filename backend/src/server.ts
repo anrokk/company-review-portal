@@ -10,7 +10,10 @@ import swaggerDocs from './config/swagger';
 import companyRoutes from './api/companyRoutes';
 import authRoutes from './api/authRoutes';
 import reviewRoutes from './api/reviewRoutes';
+import statsRoutes from './api/statsRoutes';
 import adminRoutes from './api/adminRoutes';
+
+
 import cookieParser from 'cookie-parser';
 
 const app: Express = express();
@@ -29,11 +32,13 @@ if (process.env.NODE_ENV === 'production') {
     app.use('/api/auth', authLimiter);
     app.use('/api/companies', apiLimiter);
     app.use('/api/reviews', apiLimiter);
+    app.use('/api/stats', apiLimiter);
 }
 
 app.use('/api/companies', companyRoutes);
 app.use('/api/auth', authRoutes);
 app.use('/api/reviews', reviewRoutes);
+app.use('/api/stats', statsRoutes);
 app.use('/api/admin', adminRoutes);
 
 const PORT: string | number = process.env.port || 5001;

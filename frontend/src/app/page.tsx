@@ -1,10 +1,14 @@
 import Link from "next/link";
-import { getLatestReviews } from "@/services/apiService";
+import { getLatestReviews, getStats } from "@/services/apiService";
 import LatestReviews from "@/components/LatestReviews";
+import CtaSection from "@/components/CtaSection";
 
 export default async function Home() {
 
-  const latestReviews = await getLatestReviews();
+  const [latestReviews, stats] = await Promise.all([
+    getLatestReviews(),
+    getStats()
+  ]);
 
   return (
     <>
@@ -80,7 +84,28 @@ export default async function Home() {
         </div>
       </section>
 
+      <section className="py-24">
+        <div className="container mx-auto px-6">
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-8 text-center">
+            <div>
+              <p className="text-5xl font-bold text-white">{stats.companies}</p>
+              <p className="mt-2 text-lg text-gray-400">Companies Reviewed</p>
+            </div>
+            <div>
+              <p className="text-5xl font-bold text-white">{stats.reviews}</p>
+              <p className="mt-2 text-lg text-gray-400">Experiences Shared</p>
+            </div>
+            <div>
+              <p className="text-5xl font-bold text-white">{stats.users}</p>
+              <p className="mt-2 text-lg text-gray-400">Community Members</p>
+            </div>
+          </div>
+        </div>
+      </section>
+
       <LatestReviews reviews={latestReviews} />
+
+      <CtaSection />
     </>
   );
 }

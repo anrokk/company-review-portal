@@ -1,5 +1,5 @@
 import axios from 'axios';
-import { Company, ReviewWithUsername, User, Review, PaginatedReviews } from '@/types/api';
+import { Company, ReviewWithUsername, User, Review, PaginatedReviews, PlatformStats } from '@/types/api';
 import { PaginatedCompanies } from '@/types/api';
 
 let accessToken = '';
@@ -65,6 +65,11 @@ export const getReviewsForCompany = async (companyId: string, page = 1, limit = 
 
 export const getUserReviews = async () => {
     const { data } = await api.get<ReviewWithUsername[]>('/api/reviews/my-reviews');
+    return data;
+}
+
+export const getStats = async () => {
+    const { data } = await api.get<PlatformStats>('/api/stats');
     return data;
 }
 

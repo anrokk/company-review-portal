@@ -52,3 +52,9 @@ export interface PaginatedReviews {
     hasNextPage: boolean;
   };
 }
+
+export interface PlatformStats {
+  companies: number;
+  reviews: number;
+  users: number;
+}
