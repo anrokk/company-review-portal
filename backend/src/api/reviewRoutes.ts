@@ -125,7 +125,7 @@ router.get('/company/:companyId', async (req: Request, res: Response): Promise<a
     try {
         const { companyId } = req.params;
         const page = parseInt(req.query.page as string, 10) || 1;
-        const limit = parseInt(req.query.limit as string, 10) || 10;
+        const limit = parseInt(req.query.limit as string, 10) || 5;
 
         const reviews = await reviewService.getReviewsForCompany(companyId, { page, limit });
         return res.json(reviews);

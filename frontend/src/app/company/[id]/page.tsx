@@ -13,7 +13,7 @@ export default async function CompanyDetailPage({ params }: CompanyDetailPagePro
 
     const [company, initialReviewsResult] = await Promise.all([
         getCompanyById(companyId),
-        getReviewsForCompany(companyId, 1, 10)
+        getReviewsForCompany(companyId)
     ]);
 
     if (!company) {

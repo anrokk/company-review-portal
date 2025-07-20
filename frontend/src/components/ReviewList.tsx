@@ -3,22 +3,32 @@
 import { useState, useEffect } from "react";
 import { ReviewWithUsername } from "@/types/api";
 import { useAuth } from "@/context/AuthContext";
+import { getReviewsForCompany } from "@/services/apiService";
 import ReviewCard from "./ReviewCard";
 import Link from "next/link";
 
 interface ReviewListProps {
     initialReviews: ReviewWithUsername[];
     companyId: string;
+    initialHasNextPage: boolean;
 }
 
-export default function ReviewList({ initialReviews, companyId }: ReviewListProps) {
+export default function ReviewList({ initialReviews, companyId, initialHasNextPage }: ReviewListProps) {
     const { isAuthenticated, user, isLoading: isAuthLoading } = useAuth();
 
-    const [sortOrder, setSortOrder] = useState('newest');
+    const [reviews, setReviews] = useState(initialReviews);
     const [sortedReviews, setSortedReviews] = useState<ReviewWithUsername[]>([]);
 
+    const [page, setPage] = useState(1);
+    const [hasNextPage, setHasNextPage] = useState(initialHasNextPage);
+
+    const [isLoadingMore, setIsLoadingMore] = useState(false);
+    const [loadMoreError, setLoadMoreError] = useState<string | null>(null);
+
+    const [sortOrder, setSortOrder] = useState('newest');
+
     useEffect(() => {
-        let reviewsToSort = [...initialReviews];
+        let reviewsToSort = [...reviews];
 
         reviewsToSort.sort((a, b) => {
             switch (sortOrder) {
@@ -36,7 +46,23 @@ export default function ReviewList({ initialReviews, companyId }: ReviewListProp
 
         setSortedReviews(reviewsToSort);
 
-    }, [sortOrder, initialReviews]);
+    }, [sortOrder, reviews]);
+
+    const handleLoadMore = async () => {
+        setIsLoadingMore(true);
+        setLoadMoreError(null);
+        const nextPage = page + 1;
+        try {
+            const result = await getReviewsForCompany(companyId, nextPage);
+            setReviews(prev => [...prev, ...result.data]);
+            setHasNextPage(result.pagination.hasNextPage);
+            setPage(nextPage);
+        } catch (error) {
+            setLoadMoreError('Failed to load more reviews. Please try again later.');
+        } finally {
+            setIsLoadingMore(false);
+        }
+    }
 
     const userHasReviewed = user
         ? initialReviews.some(review => review.user_id === user.id)
@@ -78,7 +104,7 @@ export default function ReviewList({ initialReviews, companyId }: ReviewListProp
             )}
 
             <div className="mt-12 space-y-6">
-                {initialReviews.length > 0 ? (
+                {reviews.length > 0 ? (
                     <>
                         <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mb-8">
                             <div className="hidden sm:block sm:flex-1"></div>
@@ -104,6 +130,23 @@ export default function ReviewList({ initialReviews, companyId }: ReviewListProp
                     <p className="text-center text-gray-500 py-8">
                         No reviews for this company yet. Be the first!
                     </p>
+                )}
+
+                {!isLoadingMore && hasNextPage && (
+                    <div className="text-center mt-12">
+                        <button
+                            onClick={handleLoadMore}
+                            className="px-8 py-4 rounded-md font-medium text-black bg-white hover:bg-gray-200"
+                        >
+                            Load More
+                        </button>
+                    </div>
+                )}
+
+                {loadMoreError && (
+                    <div className="p-3 bg-red-900/50 border border-red-500/50 rounded-md">
+                        <p className="text-red-300 text-sm text-center">{loadMoreError}</p>
+                    </div>
                 )}
             </div>
         </>
