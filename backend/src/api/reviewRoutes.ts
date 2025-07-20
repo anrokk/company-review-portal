@@ -70,7 +70,7 @@ const createReviewSchema = z.object({
 router.post('/', authMiddleware, validate(createReviewSchema), async (req: Request, res: Response): Promise<void> => {
     try {
         const { company_id, rating, role_applied_for, experience_text, was_ghosted } = req.body;
-        const userId = req.userId as string;     
+        const userId = req.userId as string;
 
         const newReview = await reviewService.createReview({
             user_id: userId,
@@ -94,6 +94,20 @@ router.post('/', authMiddleware, validate(createReviewSchema), async (req: Reque
         return;
     }
 });
+
+// swagger TODO
+router.get('/latest', async (req: Request, res: Response) => {
+    try {
+        const reviews = await reviewService.getLatestReviews(5);
+        res.json(reviews);
+        return;
+    } catch (err) {
+        if (err instanceof Error) console.error(err.message);
+        res.status(500).send('Server error');
+        return;
+    }
+});
+
 
 /**
  * @swagger
@@ -168,7 +182,7 @@ router.get('/my-reviews', authMiddleware, async (req: Request, res: Response): P
         const reviews = await reviewService.getReviewsByUser(userId);
         return res.json(reviews);
     } catch (err) {
-       return res.status(500).send('Server Error');
+        return res.status(500).send('Server Error');
     }
 });
 

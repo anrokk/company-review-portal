@@ -57,9 +57,16 @@ const findByUserId = async (userId: string): Promise<ReviewWithUsername[]> => {
     return result.rows;
 }
 
+const findLatest = async (limit: number): Promise<ReviewWithUsername[]> => {
+    const query = `SELECT r.*, u.username, c.name AS company_name FROM reviews r JOIN users u ON r.user_id = u.id JOIN companies c on r.company_id = c.id WHERE c.is_approved = TRUE ORDER BY r.created_at DESC LIMIT $1;`;
+    const result: QueryResult<ReviewWithUsername> = await db.query(query, [limit]);
+    return result.rows;
+}
+
 
 export default {
     create,
     findByCompanyId,
-    findByUserId
+    findByUserId,
+    findLatest
 }

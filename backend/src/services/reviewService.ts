@@ -28,8 +28,13 @@ const getReviewsByUser = async (userId: string) => {
     return reviewRepository.findByUserId(userId);
 }
 
+const getLatestReviews = async (limit: number) => {
+    return reviewRepository.findLatest(limit);
+}
+
 export default {
     createReview,
     getReviewsForCompany,
-    getReviewsByUser
+    getReviewsByUser,
+    getLatestReviews
 };
