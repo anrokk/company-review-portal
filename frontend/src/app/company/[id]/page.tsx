@@ -26,7 +26,7 @@ export default async function CompanyDetailPage({ params }: CompanyDetailPagePro
         : 0;
 
     return (
-        <div>
+        <div className="container mx-auto px-6 sm:px-12 py-12">
             <h1 className="text-4xl font-bold">{company.name}</h1>
 
             <div className="flex items-center gap-4 mt-3">

@@ -22,7 +22,7 @@ export default function RootLayout({
       <body className={`${inter.className} bg-black text-gray-200 antialiased flex flex-col min-h-screen`}>
         <AuthProvider>
           <Navbar />
-          <main className="container mx-auto px-6 py-8">
+          <main className="container mx-auto px-6 sm:px-12">
             {children}
           </main>
           <Footer />

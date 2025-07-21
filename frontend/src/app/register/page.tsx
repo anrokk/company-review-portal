@@ -30,7 +30,7 @@ export default function RegisterPage() {
     };
 
     return (
-        <div className="flex items-center justify-center py-6 px-4 sm:px-6 lg:px-8">
+        <div className="flex items-center justify-center py-12 px-4 sm:px-6 lg:px-8">
             <div className="w-full max-w-md space-y-8">
 
                 <div className="bg-neutral-950/60 border border-neutral-800 rounded-2xl p-8 shadow-2xl backdrop-blur-sm">

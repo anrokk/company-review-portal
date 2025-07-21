@@ -36,7 +36,7 @@ export default function CreateReviewPage() {
     }
 
     return (
-        <div className="max-w-2xl mx-auto">
+        <div className="container max-w-2xl mx-auto px-6 sm:px-12 py-12">
             <h1 className="text-3xl font-bold text-center mb-2">
                 Your Review for <span className="text-sky-400">{company.name}</span>
             </h1>

@@ -2,8 +2,8 @@ import Link from "next/link";
 
 const Hero = () => {
     return (
-        <section className="py-20 sm:py-12">
-            <div className="relative overflow-hidden rounded-2xl bg-neutral-950/50 border border-neutral-800/50 px-6 sm:px-12 py-16 sm:py-24 shadow-2xl">
+        <section className="min-h-screen py-12">
+            <div className="relative rounded-2xl px-6 sm:px-12 py-16 sm:py-24 shadow-2xl">
                 <div
                     aria-hidden="true"
                     className="absolute inset-0 -z-10 bg-radial from-white/10 to-transparent blur-3xl"

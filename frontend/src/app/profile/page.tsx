@@ -30,7 +30,7 @@ export default function ProfilePage() {
     }, [isAuthLoading]);
 
     return (
-        <section className="py-12">
+        <section className="container mx-auto px-6 sm:px-12 py-12">
             <div>
                 <h1 className="text-4xl font-bold text-white">My Reviews</h1>
                 <p className="text-lg text-gray-400 mt-5">Welcome back, <span className="font-semibold text-white">{user?.username}</span></p>

@@ -75,8 +75,7 @@ export default function CreateReviewForm({ companyId }: CreateReviewFormProps) {
                     </div>
                 </div>
                 <div>
-                    <label htmlFor="role" className="block text-sm font-medium text-gray-400 mb-2">Role You Applied For</label>
-                    <input id="role" type="text" value={role} onChange={e => setRole(e.target.value)} required className="mt-1 block w-full px-3 py-2 bg-neutral-900 border border-neutral-700 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-white" />
+                    <label htmlFor="role" className="block text-sm font-medium text-gray-400 mb-2">Role You Applied For</label>                    <input id="role" type="text" value={role} onChange={e => setRole(e.target.value)} required className="mt-1 block w-3/4 px-3 py-2 bg-neutral-900 border border-neutral-700 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-white" />
                 </div>
                 <div>
                     <label htmlFor="experience" className="block text-sm font-medium text-gray-400 mb-2">Your Experience</label>
