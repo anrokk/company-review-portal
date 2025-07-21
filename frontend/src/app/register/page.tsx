@@ -5,25 +5,45 @@ import { useAuth } from '@/context/AuthContext';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
 
+type FieldErrors = {
+    username?: string;
+    email?: string;
+    password?: string;
+    general?: string;
+}
+
 export default function RegisterPage() {
     const [username, setUsername] = useState('');
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
-    const [error, setError] = useState<string | null>(null);
+
+    const [errors, setErrors] = useState<FieldErrors>({});
+    
     const [isLoading, setIsLoading] = useState(false);
     const auth = useAuth();
     const router = useRouter();
 
     const handleSubmit = async (e: FormEvent) => {
         e.preventDefault();
-        setError(null);
+        setErrors({});
         setIsLoading(true);
 
         try {
             await auth.register({ username, email, password });
             router.push('/');
         } catch (err: any) {
-            setError(err.response.data.message);
+            const newErrors: FieldErrors = {};
+            if (err.response?.data?.errors) {
+                err.response.data.errors.forEach((zodError: any) => {
+                    const fieldName = zodError.path[1] as keyof FieldErrors;
+                    if (fieldName) {
+                        newErrors[fieldName] = zodError.message;
+                    }
+                });
+            } else if (err.response?.data?.message) {
+                newErrors.general = err.response.data.message;
+            }
+            setErrors(newErrors);
         } finally {
             setIsLoading(false);
         }
@@ -48,6 +68,7 @@ export default function RegisterPage() {
                                 onChange={(e) => setUsername(e.target.value)}
                                 className="mt-1 block w-full px-3 py-2 bg-neutral-900 border border-neutral-700 rounded-md shadow-sm placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-white focus:border-gray-400"
                             />
+                            {errors.username && <p className="text-red-400 text-xs mt-1">{errors.username}</p>}
                         </div>
                         <div>
                             <label htmlFor="email" className="block text-sm font-medium text-gray-400">Email</label>
@@ -59,6 +80,7 @@ export default function RegisterPage() {
                                 onChange={(e) => setEmail(e.target.value)}
                                 className="mt-1 block w-full px-3 py-2 bg-neutral-900 border border-neutral-700 rounded-md shadow-sm placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-white focus:border-gray-400"
                             />
+                            {errors.email && <p className="text-red-400 text-xs mt-1">{errors.email}</p>}
                         </div>
                         <div>
                             <label htmlFor="password" className="block text-sm font-medium text-gray-400">Password</label>
@@ -70,13 +92,16 @@ export default function RegisterPage() {
                                 onChange={(e) => setPassword(e.target.value)}
                                 className="mt-1 block w-full px-3 py-2 bg-neutral-900 border border-neutral-700 rounded-md shadow-sm placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-white focus:border-gray-400"
                             />
+                            {errors.password && <p className="text-red-400 text-xs mt-1">{errors.password}</p>}
                         </div>
 
-                        {error && (
+
+                        {errors.general && (
                             <div className="p-3 bg-red-900/50 border border-red-500/50 rounded-md">
-                                <p className="text-red-300 text-sm text-center">{error}</p>
+                                <p className="text-red-300 text-sm text-center"></p>
                             </div>
                         )}
+
 
                         <div>
                             <button
