@@ -22,7 +22,7 @@ const LatestReviews = ({ reviews }: LatestReviewsProps) => {
                 <div className="flex overflow-x-auto space-x-8 pb-8 latest-reviews-scroll">
                     {reviews.map((review) => (
                         <div key={review.id} className="flex-shrink-0 w-80 md:w-96">
-                            <div className="h-full flex flex-col justify-between p-6 bg-neutral-900 border border-neutral-800 rounded-lg">
+                            <div className="h-full flex flex-col justify-between p-6 bg-neutral-950/50 border border-neutral-800 rounded-lg">
                                 <div>
                                     <div className="flex items-center justify-between">
                                         <StarRating rating={review.rating} />

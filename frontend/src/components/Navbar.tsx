@@ -20,8 +20,8 @@ const Navbar = () => {
       <header className="container mx-auto max-w-screen-lg rounded-full bg-neutral-950/50 backdrop-blur-lg border border-neutral-800">
         <div className="px-6 py-6 flex justify-between items-center">
           <div className='flex items-center space-x-4'>
-            <Link href="/" className="font-bold text-xl text-transparent bg-clip-text bg-gradient-to-r from-white to-gray-400 transition-transform hover:scale-105">
-              Intereview
+            <Link href="/" className="font-light text-xl text-transparent bg-clip-text bg-gradient-to-r from-white to-gray-400 transition-transform hover:scale-105">
+              intereview
             </Link>
             <Link href="/companies" className="px-4 py-2 rounded-md text-sm font-medium text-white hover:bg-neutral-900 transition-all duration-300">
               Companies
