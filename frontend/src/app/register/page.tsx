@@ -98,7 +98,7 @@ export default function RegisterPage() {
 
                         {errors.general && (
                             <div className="p-3 bg-red-900/50 border border-red-500/50 rounded-md">
-                                <p className="text-red-300 text-sm text-center"></p>
+                                <p className="text-red-300 text-sm text-center">{errors.general}</p>
                             </div>
                         )}
 

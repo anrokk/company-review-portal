@@ -1,5 +1,6 @@
 import express, { Request, Response, Router } from 'express';
 import { z } from 'zod';
+import { ConflictError } from '../errors/apiErrors';
 import authService from '../services/authService';
 import validate from '../middleware/validationMiddleware';
 
@@ -84,9 +85,13 @@ router.post('/register', validate(registerSchema), async (req: Request, res: Res
     setTokenCookie(res, refreshToken);
     return res.status(201).json({ user, accessToken });
   } catch (err) {
+    if (err instanceof ConflictError) {
+      return res.status(err.statusCode).json({ message: err.message });
+    }
+
     const message = err instanceof Error ? err.message : 'An unknown error occurred';
-    const statusCode = (err instanceof Error && err.message === 'User with this email already exists') ? 400 : 500;
-    return res.status(statusCode).json({ message });
+
+    return res.status(500).json({ message });
   }
 });
 

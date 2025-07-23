@@ -15,6 +15,22 @@ export interface FullUser extends User {
     refresh_token_hash: string | null;
 }
 
+const findById = async (id: string): Promise<FullUser | null> => {
+    const result: QueryResult<FullUser> = await db.query(
+        'SELECT * FROM users WHERE id = $1',
+        [id]
+    );
+    return result.rows[0] || null;
+}
+
+const findByUsername = async (username: string): Promise<FullUser | null> => {
+    const result: QueryResult<FullUser> = await db.query(
+        'SELECT * FROM users WHERE username = $1',
+        [username]
+    );
+    return result.rows[0] || null;
+}
+
 
 const findByEmail = async (email: string): Promise<FullUser | null> => {
     const result: QueryResult<FullUser> = await db.query(
@@ -24,13 +40,6 @@ const findByEmail = async (email: string): Promise<FullUser | null> => {
     return result.rows[0] || null;
 };
 
-const findById = async (id: string): Promise<FullUser | null> => {
-    const result: QueryResult<FullUser> = await db.query(
-        'SELECT * FROM users WHERE id = $1',
-        [id]
-    );
-    return result.rows[0] || null;
-}
 
 const create = async (userData: { username: string, email: string, password_hash: string }): Promise<FullUser> => {
     const { username, email, password_hash } = userData;
@@ -46,7 +55,7 @@ const updateRefreshTokenHash = async (userId: string, refreshTokenHash: string |
         'UPDATE users SET refresh_token_hash = $1 WHERE id = $2',
         [refreshTokenHash, userId]
     );
-    
+
     return result.rowCount === 1;
 };
 
@@ -59,8 +68,9 @@ const findByRefreshTokenHash = async (refreshTokenHash: string): Promise<FullUse
 };
 
 export default {
-    findByEmail,
     findById,
+    findByUsername,
+    findByEmail,
     create,
     updateRefreshTokenHash,
     findByRefreshTokenHash

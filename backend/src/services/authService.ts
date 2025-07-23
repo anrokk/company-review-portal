@@ -1,6 +1,7 @@
 import bcrypt from 'bcryptjs';
 import { SignJWT, jwtVerify } from 'jose';
 import { randomBytes, createHash } from 'crypto';
+import { ConflictError } from '../errors/apiErrors';
 import userRepository, { FullUser, User } from '../repositories/userRepository';
 
 const JWT_SECRET = new TextEncoder().encode(process.env.JWT_SECRET as string);
@@ -28,9 +29,14 @@ const createTokens = async (user: FullUser) => {
 const register = async (userData: any): Promise<{ user: User, accessToken: string, refreshToken: string }> => {
     const { username, email, password } = userData;
 
-    const existingUser = await userRepository.findByEmail(email);
-    if (existingUser) {
-        throw new Error('User with this email already exists');
+    const existingEmail = await userRepository.findByEmail(email);
+    if (existingEmail) {
+        throw new ConflictError('User with this email already exists');
+    }
+
+    const existingUsername = await userRepository.findByUsername(username);
+    if (existingUsername) {
+        throw new ConflictError('This username is already taken.');
     }
 
     const password_hash = await bcrypt.hash(password, 10);
