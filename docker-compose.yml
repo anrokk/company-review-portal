@@ -29,7 +29,7 @@ services:
       - ./backend/.env
     environment:
       - NODE_ENV=development
-      - DB_HOST=db
+      - DATABASE_URL=${DOCKER_DATABASE_URL}
     healthcheck:
       test: ["CMD", "curl", "-f", "http://localhost:5001"]
       interval: 10s

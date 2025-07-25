@@ -1,90 +1,73 @@
-import db from '../config/db';
-import { QueryResult } from 'pg';
+import prisma from "../config/prismaClient";
+import { Company as PrismaCompany, Prisma } from "@prisma/client";
 
-export interface Company {
-    id: string;
-    name: string;
-    logo_url: string | null;
-    created_at: Date;
-    updated_at: Date;
-}
+export type Company = PrismaCompany;
 
 const findAllPaginated = async (limit: number, offset: number, searchTerm?: string) => {
+    const whereClause: Prisma.CompanyWhereInput = {
+        is_approved: true,
+    };
 
-    let baseQuery = 'FROM companies WHERE is_approved = TRUE';
-    const countParams: string[] = [];
-    const dataParams: (string | number)[] = [];
+    if (searchTerm) {
+        whereClause.name = {
+            contains: searchTerm,
+            mode: 'insensitive'
+        }
+    };
 
-    if (searchTerm && searchTerm.trim() !== '') {
-        baseQuery += ' AND name ILIKE $1';
-        countParams.push(`%${searchTerm}%`);
-        dataParams.push(`%${searchTerm}%`);
-    }
-
-    const countQuery = `SELECT COUNT(*) ${baseQuery}`;
-    const dataQuery = `SELECT * ${baseQuery} ORDER BY name ASC LIMIT $${dataParams.length + 1} OFFSET $${dataParams.length + 2}`;
-    dataParams.push(limit, offset);
-
-    const [dataResult, countResult] = await Promise.all([
-        db.query(dataQuery, dataParams),
-        db.query(countQuery, countParams)
+    const [companies, totalCount] = await prisma.$transaction([
+        prisma.company.findMany({
+            where: whereClause,
+            take: limit,
+            skip: offset,
+            orderBy: { name: 'asc' }
+        }),
+        prisma.company.count({ where: whereClause })
     ]);
 
-    return {
-        companies: dataResult.rows,
-        totalCount: parseInt(countResult.rows[0].count, 10)
-    };
+    return { companies, totalCount }
 };
 
 const findById = async (id: string): Promise<Company | null> => {
-    const result: QueryResult<Company> = await db.query(
-        'SELECT * FROM companies WHERE id = $1 AND is_approved = TRUE',
-        [id]
-    );
-    return result.rows[0] || null;
+    return prisma.company.findUnique({
+        where: { id }
+    });
 };
 
 const findByName = async (name: string): Promise<Company | null> => {
-    const result: QueryResult<Company> = await db.query(
-        'SELECT * FROM companies WHERE LOWER(name) = LOWER($1)',
-        [name]
-    );
-    return result.rows[0] || null;
+    return prisma.company.findFirst({
+        where: { name: { equals: name, mode: 'insensitive' } }
+    });
 };
 
 const create = async (companyData: { name: string, logo_url?: string, is_approved?: boolean }): Promise<Company> => {
-    const { name, logo_url, is_approved = false } = companyData;
-    const result: QueryResult<Company> = await db.query(
-        'INSERT INTO companies (name, logo_url, is_approved) VALUES ($1, $2, $3) RETURNING *',
-        [name, logo_url, is_approved]
-    );
-    return result.rows[0];
+    return prisma.company.create({
+        data: companyData
+    });
 };
 
 const findPending = async (): Promise<Company[]> => {
-    const result = await db.query(
-        'SELECT * FROM companies WHERE is_approved = FALSE ORDER BY created_at DESC'
-    );
-    return result.rows;
+    return prisma.company.findMany({
+        where: { is_approved: false },
+        orderBy: { created_at: 'desc' }
+    });
 };
 
 
 // for admin use
 const updateApprovalStatus = async (id: string, is_approved: boolean): Promise<Company | null> => {
-    const result: QueryResult<Company> = await db.query(
-        'UPDATE companies SET is_approved = $1, updated_at = NOW() WHERE id = $2 RETURNING *',
-        [is_approved, id]
-    );
-    return result.rows[0] || null;
+    return prisma.company.update({
+        where: { id },
+        data: { is_approved, updated_at: new Date() }
+    })
 };
 
 
 // for admin use
 const deleteById = async (id: string): Promise<void> => {
-    await db.query(
-        'DELETE FROM companies WHERE id = $1',
-        [id]
-    );
+    await prisma.company.delete({
+        where: { id }
+    });
 };
 
 export default {
