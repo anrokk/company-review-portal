@@ -1,16 +1,16 @@
-import db from "../config/db";
+import prisma from "../config/prismaClient";
 
 const getPlatformStats = async () => {
-    const [companyCount, reviewCount, userCount] = await Promise.all([
-        db.query('SELECT COUNT(*) FROM companies WHERE is_approved = TRUE'),
-        db.query('SELECT COUNT(*) FROM reviews'),
-        db.query('SELECT COUNT(*) FROM users')
+    const [companyCount, reviewCount, userCount] = await prisma.$transaction([
+        prisma.company.count({ where: { is_approved: true } }),
+        prisma.review.count(),
+        prisma.user.count()
     ]);
 
     return {
-        companies: parseInt(companyCount.rows[0].count, 10),
-        reviews: parseInt(reviewCount.rows[0].count, 10),
-        users: parseInt(userCount.rows[0].count, 10)
+        companies: companyCount,
+        reviews: reviewCount,
+        users: userCount
     };
 };
 

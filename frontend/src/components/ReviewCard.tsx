@@ -1,9 +1,9 @@
-import { ReviewWithUsername } from "@/types/api";
+import { ReviewWithDetails } from "@/types/api";
 import StarRating from "./StarRating";
 import Link from "next/link";
 
 interface ReviewCardProps {
-    review: ReviewWithUsername;
+    review: ReviewWithDetails;
     showUsername?: boolean;
 }
 
@@ -20,16 +20,16 @@ const ReviewCard = ({ review, showUsername = true }: ReviewCardProps) => {
             <div className="flex justify-between items-center">
                 <StarRating rating={review.rating} />
                 <div className="text-right">
-                    {showUsername && (
-                        <p className="text-sm font-medium text-gray-300">by {review.username}</p>
+                    {showUsername && review.user && (
+                        <p className="text-sm font-medium text-gray-300">by {review.user.username}</p>
                     )}
                     <p className="text-xs text-gray-500 mt-1">{reviewDate}</p>
                 </div>
             </div>
 
-            {review.company_name && (
+            {review.company && (
                 <Link href={`/company/${review.company_id}`} className="block">
-                    <h4 className="text-lg font-bold text-sky-400 mt-4 hover:underline">{review.company_name}</h4>
+                    <h4 className="text-lg font-bold text-sky-400 mt-4 hover:underline">{review.company.name}</h4>
                 </Link>
             )}
 

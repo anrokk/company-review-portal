@@ -1,3 +1,4 @@
+import { ConflictError } from "../errors/apiErrors";
 import companyRepository, { Company } from "../repositories/companyRepository";
 
 const getAllCompanies = async (options: { page: number, limit: number, searchTerm?: string }) => {
@@ -29,7 +30,7 @@ const createCompany = async (companyData: { name: string; logo_url?: string }): 
 
     const existingCompany = await companyRepository.findByName(name);
     if (existingCompany) {
-        throw new Error(`Company with name "${name}" already exists.`);
+        throw new ConflictError(`Company with name "${name}" already exists.`);
     }
 
     const newCompany = await companyRepository.create({ name, logo_url, is_approved: false });
