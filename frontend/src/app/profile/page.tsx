@@ -3,12 +3,12 @@
 import { useEffect, useState } from "react";
 import { useAuth } from "@/context/AuthContext";
 import { getUserReviews } from "@/services/apiService";
-import { ReviewWithUsername } from "@/types/api";
+import { ReviewWithDetails } from "@/types/api";
 import ReviewCard from "@/components/ReviewCard";
 
 export default function ProfilePage() {
     const { user, isLoading: isAuthLoading } = useAuth();
-    const [reviews, setReviews] = useState<ReviewWithUsername[]>([]);
+    const [reviews, setReviews] = useState<ReviewWithDetails[]>([]);
     const [isLoading, setIsLoading] = useState(true);
 
     useEffect(() => {
@@ -38,7 +38,7 @@ export default function ProfilePage() {
 
             <div className="mt-8">
                 <div className="mt-8 space-y-6">
-                    {reviews.length > 0 ?(
+                    {reviews.length > 0 ? (
                         reviews.map(review => (
                             <ReviewCard key={review.id} review={review} showUsername={false} />
                         ))

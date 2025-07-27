@@ -2,7 +2,7 @@ import { getCompanyById, getReviewsForCompany } from "@/services/apiService";
 import { notFound } from "next/navigation";
 import ReviewList from "@/components/ReviewList";
 import StarRating from "@/components/StarRating";
-import { ReviewWithUsername } from "@/types/api";
+import { ReviewWithDetails } from "@/types/api";
 
 interface CompanyDetailPageProps {
     params: { id: string };
@@ -22,7 +22,7 @@ export default async function CompanyDetailPage({ params }: CompanyDetailPagePro
 
     const totalReviews = initialReviewsResult.pagination.totalItems;
     const averageRating = totalReviews > 0
-        ? (initialReviewsResult.data.reduce((acc: number, review: ReviewWithUsername) => acc + review.rating, 0) / initialReviewsResult.data.length)
+        ? (initialReviewsResult.data.reduce((acc: number, review: ReviewWithDetails) => acc + review.rating, 0) / initialReviewsResult.data.length)
         : 0;
 
     return (

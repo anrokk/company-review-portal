@@ -1,14 +1,14 @@
 'use client';
 
 import { useState, useEffect } from "react";
-import { ReviewWithUsername } from "@/types/api";
+import { ReviewWithDetails } from "@/types/api";
 import { useAuth } from "@/context/AuthContext";
 import { getReviewsForCompany } from "@/services/apiService";
 import ReviewCard from "./ReviewCard";
 import Link from "next/link";
 
 interface ReviewListProps {
-    initialReviews: ReviewWithUsername[];
+    initialReviews: ReviewWithDetails[];
     companyId: string;
     initialHasNextPage: boolean;
 }
@@ -17,7 +17,7 @@ export default function ReviewList({ initialReviews, companyId, initialHasNextPa
     const { isAuthenticated, user, isLoading: isAuthLoading } = useAuth();
 
     const [reviews, setReviews] = useState(initialReviews);
-    const [sortedReviews, setSortedReviews] = useState<ReviewWithUsername[]>([]);
+    const [sortedReviews, setSortedReviews] = useState<ReviewWithDetails[]>([]);
 
     const [page, setPage] = useState(1);
     const [hasNextPage, setHasNextPage] = useState(initialHasNextPage);
