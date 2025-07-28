@@ -34,6 +34,7 @@ export default function ProfilePage() {
             <div>
                 <h1 className="text-4xl font-bold text-white">My Reviews</h1>
                 <p className="text-lg text-gray-400 mt-5">Welcome back, <span className="font-semibold text-white">{user?.username}</span></p>
+                <p className="text-lg text-gray-400 mt-2">You have left a total of {reviews.length} reviews</p>
             </div>
 
             <div className="mt-8">
