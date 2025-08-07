@@ -12,6 +12,7 @@ import authRoutes from './api/authRoutes';
 import reviewRoutes from './api/reviewRoutes';
 import statsRoutes from './api/statsRoutes';
 import adminRoutes from './api/adminRoutes';
+import userRoutes from './api/userRoutes';
 
 
 import cookieParser from 'cookie-parser';
@@ -33,6 +34,7 @@ if (process.env.NODE_ENV === 'production') {
     app.use('/api/companies', apiLimiter);
     app.use('/api/reviews', apiLimiter);
     app.use('/api/stats', apiLimiter);
+    app.use('/api/users', apiLimiter);
 }
 
 app.use('/api/companies', companyRoutes);
@@ -40,6 +42,7 @@ app.use('/api/auth', authRoutes);
 app.use('/api/reviews', reviewRoutes);
 app.use('/api/stats', statsRoutes);
 app.use('/api/admin', adminRoutes);
+app.use('/api/users', userRoutes);
 
 const PORT: string | number = process.env.port || 5001;
 

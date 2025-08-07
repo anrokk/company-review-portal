@@ -31,6 +31,7 @@ export const config = {
         '/admin/:path*',
         '/companies/new',
         '/company/:path*/review',
-        '/profile/:path*'
+        '/profile/:path*',
+        '/settings/:path*'
     ]
 };

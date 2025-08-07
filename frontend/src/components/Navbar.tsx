@@ -49,7 +49,7 @@ const Navbar = () => {
             ) : isAuthenticated ? (
               <div className="flex items-center space-x-4">
                 <Link href="/profile" className="px-4 py-2 rounded-md text-sm font-medium text-white hover:bg-neutral-900 transition-all duration-300">
-                  My Reviews
+                  My Profile
                 </Link>
                 <span className='text-gray-400 hidden sm:block'>{user?.username}</span>
                 <button
@@ -92,7 +92,7 @@ const Navbar = () => {
             <Link href="/companies" onClick={() => setIsMenuOpen(false)} className='text-lg text-white'>Companies</Link>
             {isAuthenticated ? (
               <>
-                <Link href="/profile" onClick={() => setIsMenuOpen(false)} className='text-lg text-white'>My Reviews</Link>
+                <Link href="/profile" onClick={() => setIsMenuOpen(false)} className='text-lg text-white'>My Profile</Link>
                 <button onClick={handleLogout} className="px-6 py-3 rounded-full text-lg font-medium text-black bg-white">Logout</button>
               </>
             ) : (

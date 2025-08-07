@@ -102,3 +102,8 @@ export const createReview = async (reviewData: any) => {
     const { data } = await api.post<Review>('/api/reviews', reviewData);
     return data;
 };
+
+export const changePassword = async (passwordData: { currentPassword: string, newPassword: string }) => {
+    const { data } = await api.patch('/api/users/me/change-password', passwordData);
+    return data;
+}
