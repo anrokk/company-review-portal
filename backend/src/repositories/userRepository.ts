@@ -48,11 +48,19 @@ const findByRefreshTokenHash = async (refreshTokenHash: string): Promise<FullUse
     })
 };
 
+const updatePassword = async (userId: string, newPasswordHash: string): Promise<void> => {
+    await prisma.user.update({
+        where: { id: userId },
+        data: { password_hash: newPasswordHash}
+    });
+};
+
 export default {
     findById,
     findByUsername,
     findByEmail,
     create,
     updateRefreshTokenHash,
-    findByRefreshTokenHash
+    findByRefreshTokenHash,
+    updatePassword
 };
