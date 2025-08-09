@@ -33,7 +33,7 @@ export default function ChangePasswordForm() {
     };
 
     return (
-        <div className="mt-12">
+        <div className="mt-12 sm:w-1/2">
             <h2 className="text-2xl font-bold text-white">Change Password</h2>
             <div className="mt-6 p-8 border border-neutral-800 rounded-2xl bg-neutral-950/50">
                 <form onSubmit={handleSubmit} className="space-y-6">
