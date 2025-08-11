@@ -17,7 +17,7 @@ import userRoutes from './api/userRoutes';
 
 import cookieParser from 'cookie-parser';
 
-const app: Express = express();
+export const app: Express = express();
 
 app.use(cors({ origin: process.env.CORS_ORIGIN, credentials: true }));
 app.use(express.json());
@@ -52,5 +52,7 @@ const startServer = async (): Promise<void> => {
     });
 };
 
-startServer();
+if (process.env.NODE_ENV !== 'test') {
+    startServer();
+};
 

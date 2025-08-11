@@ -16,6 +16,17 @@ services:
       interval: 10s
       timeout: 5s
       retries: 5
+  
+  test-db:
+    image: postgres:14-alpine
+    container_name: company-review-test-db
+    restart: unless-stopped
+    environment:
+      - POSTGRES_USER=${DB_USER}
+      - POSTGRES_PASSWORD=${DB_PASSWORD}
+      - POSTGRES_DB=company_reviews_test 
+    ports:
+      - '5433:5432'
       
   backend:
     build: ./backend
@@ -30,6 +41,7 @@ services:
     environment:
       - NODE_ENV=development
       - DATABASE_URL=${DOCKER_DATABASE_URL}
+      - TEST_DATABASE_URL=${TEST_DATABASE_URL}
     healthcheck:
       test: ["CMD", "curl", "-f", "http://localhost:5001"]
       interval: 10s
