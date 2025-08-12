@@ -22,7 +22,7 @@ describe('Auth endpoints', () => {
 
 
     it('Should prevent registration with existing email', async () => {
-        await request.post('api/auth/register').send({
+        await request.post('/api/auth/register').send({
             username: 'firstuser',
             email: 'duplicate@example.com',
             password: 'Password123!'

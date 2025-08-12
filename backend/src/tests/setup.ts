@@ -3,7 +3,7 @@ import { execSync } from 'child_process';
 import prisma from '../config/prismaClient';
 
 beforeAll(async () => {
-    execSync('npx prisma migrate deploy');
+    execSync('npx prisma db push --force-reset');
 });
 
 beforeEach(async () => {
