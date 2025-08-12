@@ -29,8 +29,11 @@ const findAllPaginated = async (limit: number, offset: number, searchTerm?: stri
 };
 
 const findById = async (id: string): Promise<Company | null> => {
-    return prisma.company.findUnique({
-        where: { id }
+    return prisma.company.findFirst({
+        where: {
+            id,
+            is_approved: true
+        }
     });
 };
 
